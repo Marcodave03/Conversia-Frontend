@@ -146,7 +146,7 @@ const AvatarPick: React.FC<AvatarPickProps> = ({
   const [selectedAvatar, setSelectedAvatar] = useState<Avatar | null>(null);
 
   useEffect(() => {
-    fetch(`http://localhost:5555/api/conversia/users/${userId}/avatars`)
+    fetch(`${host}/api/conversia/users/${userId}/avatars`)
       .then((res) => res.json())
       .then((data: UserAvatar[]) => {
         const ownedAvatarIds = data

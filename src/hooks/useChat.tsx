@@ -1,4 +1,10 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from "react";
 
 // Define the message type
 interface Message {
@@ -24,7 +30,7 @@ interface ChatProviderProps {
   children: ReactNode;
 }
 
-const backendUrl = import.meta.env.VITE_API_URL || "http://localhost:5555";
+const backendUrl = import.meta.env.VITE_API_URL || "localhost:3000";
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
 
@@ -42,12 +48,12 @@ export const ChatProvider = ({ children }: ChatProviderProps): JSX.Element => {
     setMessages((messages) => [...messages, ...resp]);
     setLoading(false);
   };
-  
+
   const [messages, setMessages] = useState<Message[]>([]);
   const [message, setMessage] = useState<Message | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [cameraZoomed, setCameraZoomed] = useState<boolean>(true);
-  
+
   const onMessagePlayed = (): void => {
     setMessages((messages) => messages.slice(1));
   };

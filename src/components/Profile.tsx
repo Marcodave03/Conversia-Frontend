@@ -27,8 +27,8 @@ const Profile: React.FC<ProfileProps> = ({ onClose }) => {
     digest: string;
     timestampMs?: string;
   }
-  
-    const [transactions, setTransactions] = useState<Transaction[]>([]);
+
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [ownedNFTs, setOwnedNFTs] = useState<
     { name: string; objectId: string }[]
   >([]);
@@ -40,7 +40,7 @@ const Profile: React.FC<ProfileProps> = ({ onClose }) => {
       if (!wallet.account?.address) return;
 
       try {
-        const res = await fetch("http://localhost:5555/api/conversia/users", {
+        const res = await fetch("${host}/api/conversia/users", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -127,7 +127,7 @@ const Profile: React.FC<ProfileProps> = ({ onClose }) => {
     if (!userId) return;
 
     try {
-      await fetch(`http://localhost:5555/api/conversia/users/${userId}`, {
+      await fetch(`${host}/api/conversia/users/${userId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username: newUsername }),
