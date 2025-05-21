@@ -34,7 +34,7 @@ const App: React.FC<InterviewProps> = () => {
   const [backgroundUrl, setBackgroundUrl] = useState<string>(bgImage); // use default bg as fallback
   const storedBypass = localStorage.getItem("bypassWallet");
   const walletAddress = wallet.account?.address ?? storedBypass;
-  const HOST = process.env.HOST || "http://localhost:5555";
+  const host = import.meta.env.VITE_HOST;
 
   // Hide intro after animation finishes
   useEffect(() => {
@@ -52,7 +52,7 @@ const App: React.FC<InterviewProps> = () => {
 
       try {
         // Create or get user by wallet address
-        const res = await fetch("${HOST}/api/conversia/users", {
+        const res = await fetch(`${host}/api/conversia/users`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -84,7 +84,7 @@ const App: React.FC<InterviewProps> = () => {
 
       try {
         const res = await fetch(
-          `${HOST}/api/conversia/chat-history/${userId}/${modelId}`
+          `${host}/api/conversia/chat-history/${userId}/${modelId}`
         );
         const data = await res.json();
 
@@ -147,7 +147,7 @@ const App: React.FC<InterviewProps> = () => {
       const lastMessage = chatMessages[chatMessages.length - 1];
 
       const response = await fetch(
-        `${HOST}/api/conversia/chat-history/${userId}/${modelId}`,
+        `${host}/api/conversia/chat-history/${userId}/${modelId}`,
         {
           method: "POST",
           headers: {
@@ -166,7 +166,7 @@ const App: React.FC<InterviewProps> = () => {
       const mouthCues = data.system?.lipsync?.mouthCues || [];
       const facialExpression = data.system?.facialExpression || "default";
       const animation = data.system?.animation || "Idle";
-      const audioUrl = "${HOST}/audios/response.mp3";
+      const audioUrl = `${host}/audios/response.mp3`;
 
       setTypingText("");
       setCurrentExpression(facialExpression);
@@ -266,7 +266,7 @@ const App: React.FC<InterviewProps> = () => {
             setLoadingTranscription(true); // === ADD THIS ===
 
             const response = await fetch(
-              `${HOST}/api/conversia/speech-to-text/${userId}/${modelId}`,
+              `${host}/api/conversia/speech-to-text/${userId}/${modelId}`,
               {
                 method: "POST",
                 body: formData,

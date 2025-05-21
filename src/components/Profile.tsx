@@ -23,8 +23,6 @@ const Profile: React.FC<ProfileProps> = ({ onClose }) => {
   const [username, setUsername] = useState<string>("loading...");
   const [editing, setEditing] = useState<boolean>(false);
   const [newUsername, setNewUsername] = useState<string>("");
-  const HOST = process.env.HOST || "http://localhost:5555";
-  
   interface Transaction {
     digest: string;
     timestampMs?: string;
@@ -36,13 +34,14 @@ const Profile: React.FC<ProfileProps> = ({ onClose }) => {
   >([]);
   const [suiBalance, setSuiBalance] = useState<string>("0");
   const [nftCount, setNftCount] = useState<number>(0);
+  const host = import.meta.env.VITE_HOST;
 
   useEffect(() => {
     const fetchUserData = async () => {
       if (!wallet.account?.address) return;
 
       try {
-        const res = await fetch(`${HOST}/api/conversia/users`, {
+        const res = await fetch(`${host}/api/conversia/users`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -129,7 +128,7 @@ const Profile: React.FC<ProfileProps> = ({ onClose }) => {
     if (!userId) return;
 
     try {
-      await fetch(`${HOST}/api/conversia/users/${userId}`, {
+      await fetch(`${host}/api/conversia/users/${userId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username: newUsername }),

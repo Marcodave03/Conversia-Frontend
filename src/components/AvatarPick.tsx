@@ -136,8 +136,6 @@ const avatarCatalog: Avatar[] = [
 
 const cn = (...classes: (string | false | undefined)[]) =>
   classes.filter(Boolean).join(" ");
-const HOST = process.env.HOST || "http://localhost:5555";
-
 
 const AvatarPick: React.FC<AvatarPickProps> = ({
   onClose,
@@ -146,9 +144,10 @@ const AvatarPick: React.FC<AvatarPickProps> = ({
 }) => {
   const [avatars, setAvatars] = useState<Avatar[]>(avatarCatalog);
   const [selectedAvatar, setSelectedAvatar] = useState<Avatar | null>(null);
+  const host = import.meta.env.VITE_HOST;
 
   useEffect(() => {
-    fetch(`${HOST}/api/conversia/users/${userId}/avatars`)
+    fetch(`${host}/api/conversia/users/${userId}/avatars`)
       .then((res) => res.json())
       .then((data: UserAvatar[]) => {
         const ownedAvatarIds = data
