@@ -23,6 +23,8 @@ const Profile: React.FC<ProfileProps> = ({ onClose }) => {
   const [username, setUsername] = useState<string>("loading...");
   const [editing, setEditing] = useState<boolean>(false);
   const [newUsername, setNewUsername] = useState<string>("");
+  const HOST = process.env.HOST || "http://localhost:5555";
+  
   interface Transaction {
     digest: string;
     timestampMs?: string;
@@ -40,7 +42,7 @@ const Profile: React.FC<ProfileProps> = ({ onClose }) => {
       if (!wallet.account?.address) return;
 
       try {
-        const res = await fetch("${HOST}/api/conversia/users", {
+        const res = await fetch(`${HOST}/api/conversia/users`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({

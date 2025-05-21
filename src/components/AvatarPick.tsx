@@ -136,6 +136,8 @@ const avatarCatalog: Avatar[] = [
 
 const cn = (...classes: (string | false | undefined)[]) =>
   classes.filter(Boolean).join(" ");
+const HOST = process.env.HOST || "http://localhost:5555";
+
 
 const AvatarPick: React.FC<AvatarPickProps> = ({
   onClose,
