@@ -12,7 +12,7 @@ const Wallet: React.FC = () => {
       if (wallet.status === "connected" && wallet.account?.address) {
         try {
           // Send user info to backend
-          const res = await fetch("${host}/api/conversia/users", {
+          const res = await fetch("${HOST}/api/conversia/users", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

@@ -40,7 +40,7 @@ const Profile: React.FC<ProfileProps> = ({ onClose }) => {
       if (!wallet.account?.address) return;
 
       try {
-        const res = await fetch("${host}/api/conversia/users", {
+        const res = await fetch("${HOST}/api/conversia/users", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -127,7 +127,7 @@ const Profile: React.FC<ProfileProps> = ({ onClose }) => {
     if (!userId) return;
 
     try {
-      await fetch(`${host}/api/conversia/users/${userId}`, {
+      await fetch(`${HOST}/api/conversia/users/${userId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username: newUsername }),

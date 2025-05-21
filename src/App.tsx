@@ -52,7 +52,7 @@ const App: React.FC<InterviewProps> = () => {
 
       try {
         // Create or get user by wallet address
-        const res = await fetch("${host}/api/conversia/users", {
+        const res = await fetch("${HOST}/api/conversia/users", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -84,7 +84,7 @@ const App: React.FC<InterviewProps> = () => {
 
       try {
         const res = await fetch(
-          `${host}/api/conversia/chat-history/${userId}/${modelId}`
+          `${HOST}/api/conversia/chat-history/${userId}/${modelId}`
         );
         const data = await res.json();
 
@@ -147,7 +147,7 @@ const App: React.FC<InterviewProps> = () => {
       const lastMessage = chatMessages[chatMessages.length - 1];
 
       const response = await fetch(
-        `${host}/api/conversia/chat-history/${userId}/${modelId}`,
+        `${HOST}/api/conversia/chat-history/${userId}/${modelId}`,
         {
           method: "POST",
           headers: {
@@ -166,7 +166,7 @@ const App: React.FC<InterviewProps> = () => {
       const mouthCues = data.system?.lipsync?.mouthCues || [];
       const facialExpression = data.system?.facialExpression || "default";
       const animation = data.system?.animation || "Idle";
-      const audioUrl = "${host}/audios/response.mp3";
+      const audioUrl = "${HOST}/audios/response.mp3";
 
       setTypingText("");
       setCurrentExpression(facialExpression);
@@ -266,7 +266,7 @@ const App: React.FC<InterviewProps> = () => {
             setLoadingTranscription(true); // === ADD THIS ===
 
             const response = await fetch(
-              `${host}/api/conversia/speech-to-text/${userId}/${modelId}`,
+              `${HOST}/api/conversia/speech-to-text/${userId}/${modelId}`,
               {
                 method: "POST",
                 body: formData,
