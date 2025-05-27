@@ -128,7 +128,7 @@ const Header: React.FC<HeaderProps> = ({
       )}
       {showAvatar && (
         <AvatarPick
-          userId={userId}
+          // userId={userId}
           onClose={() => setShowAvatar(false)}
           onSelectAvatar={(modelUrl, modelId) => {
             setModelUrl(modelUrl);
