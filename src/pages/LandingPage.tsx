@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { GoogleLogin } from "@react-oauth/google";
-import { jwtDecode } from "jwt-decode";
+// import { jwtDecode } from "jwt-decode";
 import { jwtToAddress } from "@mysten/sui/zklogin";
 
 import bgImage from "../assets/landing-bg.jpg";
 import logo from "../assets/conversia-lg.png";
 import Wallet from "../components/Wallet";
 
-const ISSUER = "https://accounts.google.com";
-const AUDIENCE =
-  "990468881493-c98ech5p3srgtur82p33g6ckvdoucikn.apps.googleusercontent.com";
+// const ISSUER = "https://accounts.google.com";
+// const AUDIENCE =
+//   "990468881493-c98ech5p3srgtur82p33g6ckvdoucikn.apps.googleusercontent.com";
 const HOST = import.meta.env.VITE_HOST;
 
 const LandingPage: React.FC = () => {
@@ -22,7 +22,7 @@ const LandingPage: React.FC = () => {
 
   const handleZkLogin = async (credential: string) => {
     try {
-      const decoded = jwtDecode(credential);
+      // const decoded = jwtDecode(credential);
       const userSalt = "fixedSalt123"; // ⚠️ Replace with secure logic in production
 
       const address = jwtToAddress(credential, userSalt);
