@@ -25,6 +25,11 @@ type ChatHistoryItem = {
 
 const App: React.FC<InterviewProps> = () => {
   const wallet = useWallet();
+  const storedZkWallet = localStorage.getItem("zkloginWallet");
+  const storedBypass = localStorage.getItem("bypassWallet");
+  const walletAddress =
+    wallet.account?.address ?? storedBypass ?? storedZkWallet;
+  // const wallet = useWallet();
   const [modelId, setModelId] = useState<number>(1);
   const [userId, setUserId] = useState<number>();
   const [currentExpression, setCurrentExpression] = useState<string | null>(
@@ -32,8 +37,8 @@ const App: React.FC<InterviewProps> = () => {
   );
   const [modelUrl, setModelUrl] = useState<string>("/models/girl1.glb"); // default avatar
   const [backgroundUrl, setBackgroundUrl] = useState<string>(bgImage); // use default bg as fallback
-  const storedBypass = localStorage.getItem("bypassWallet");
-  const walletAddress = wallet.account?.address ?? storedBypass;
+  // const storedBypass = localStorage.getItem("bypassWallet");
+  // const walletAddress = wallet.account?.address ?? storedBypass;
   const host = import.meta.env.VITE_HOST;
 
   // Hide intro after animation finishes
