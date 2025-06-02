@@ -94,11 +94,9 @@
 
 // export default ProtectedRoute;
 
-
-
-import React, { useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom';
-import { useWallet } from '@suiet/wallet-kit';
+import React, { useEffect, useState } from "react";
+import { Navigate } from "react-router-dom";
+import { useWallet } from "@suiet/wallet-kit";
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const wallet = useWallet();
@@ -107,15 +105,19 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 
   useEffect(() => {
     const zkLoginFlag = localStorage.getItem("zklogin_loggedin");
-    console.log("✅ zklogin_loggedin =", zkLoginFlag);
-    console.log("✅ wallet.status =", wallet.status);
+    const zkWallet = localStorage.getItem("zkloginWallet");
 
-    const isLoggedIn =
-      wallet.status === 'connected' || zkLoginFlag === 'true';
+    const connectedViaZk = zkLoginFlag === "true" && zkWallet?.startsWith("0x");
+    const connectedViaWallet = wallet.status === "connected";
 
-    setIsAuthenticated(isLoggedIn);
+    if (connectedViaWallet || connectedViaZk) {
+      setIsAuthenticated(true);
+    } else {
+      setIsAuthenticated(false);
+    }
+
     setIsReady(true);
-  }, []); // ✅ only on mount to ensure it catches localStorage right after redirect
+  }, [wallet.status]);
 
   if (!isReady) return null;
 
