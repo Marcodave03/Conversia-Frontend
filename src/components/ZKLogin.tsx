@@ -110,12 +110,12 @@
 import React from "react";
 import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
 import { jwtToAddress } from "@mysten/sui/zklogin";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 const host = import.meta.env.VITE_HOST;
 
 const ZkLogin: React.FC = () => {
-  const navigate = useNavigate();
+//   const navigate = useNavigate();
 
   const handleZkLogin = async (credential: string) => {
     try {
@@ -141,7 +141,9 @@ const ZkLogin: React.FC = () => {
       console.log("✅ ZK user created or verified:", data);
 
       // ✅ Redirect to main page
-      setTimeout(() => navigate("/"), 100); 
+      setTimeout(() => {
+        window.location.href = "/";
+        }, 100);
     } catch (err) {
       console.error("❌ zkLogin failed:", err);
     }

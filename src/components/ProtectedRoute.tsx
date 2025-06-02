@@ -135,22 +135,6 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
   const [isReady, setIsReady] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // useEffect(() => {
-  //   const storedBypass = localStorage.getItem("bypassWallet");
-  //   const storedZkWallet = localStorage.getItem("zkloginWallet");
-  //   const resolvedWallet = wallet.account?.address ?? storedBypass ?? storedZkWallet;
-
-  //   console.log("🔐 [ProtectedRoute] Resolved:", resolvedWallet);
-
-  //   if (resolvedWallet?.startsWith("0x")) {
-  //     setIsAuthenticated(true);
-  //   } else {
-  //     setIsAuthenticated(false);
-  //   }
-
-  //   setIsReady(true);
-  // }, [wallet.account?.address]); // Trigger this again if wallet connects
-
   useEffect(() => {
     const checkAuth = () => {
       const storedBypass = localStorage.getItem("bypassWallet");
@@ -179,6 +163,9 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
 
   if (!isReady) return null;
 
+  if (!isAuthenticated && isReady) {
+    console.log("🔄 Redirecting to /landing...");
+  }
   return isAuthenticated ? <>{children}</> : <Navigate to="/landing" />;
 };
 
