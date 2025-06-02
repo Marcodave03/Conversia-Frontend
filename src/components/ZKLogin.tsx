@@ -51,6 +51,62 @@
 
 
 
+// import React from "react";
+// import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
+// import { jwtToAddress } from "@mysten/sui/zklogin";
+// import { useNavigate } from "react-router-dom";
+
+// const host = import.meta.env.VITE_HOST;
+
+// const ZkLogin: React.FC = () => {
+//   const navigate = useNavigate();
+
+//   const handleZkLogin = async (credential: string) => {
+//     try {
+//       const userSalt = BigInt("12345678901234567890");
+//       const address = jwtToAddress(credential, userSalt);
+
+//       localStorage.setItem("zklogin_loggedin", "true");
+//       localStorage.setItem("zkloginWallet", address);
+//       localStorage.setItem("zkloginJWT", credential);
+
+//       const res = await fetch(`${host}/api/conversia/users`, {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify({
+//           sui_id: address,
+//           username: "zklogin_user",
+//         }),
+//       });
+
+//       const data = await res.json();
+//       console.log("✅ ZK user created or verified:", data);
+
+//       navigate("/"); // ✅ This must be hit
+//     } catch (err) {
+//       console.error("❌ zkLogin failed:", err);
+//     }
+//   };
+
+//   return (
+//     <GoogleLogin
+//       onSuccess={(response: CredentialResponse) => {
+//         console.log("✅ Google login success", response);
+//         if (response.credential) {
+//           handleZkLogin(response.credential);
+//         } else {
+//           console.error("❌ Missing credential from Google");
+//         }
+//       }}
+//       onError={() => console.error("❌ Google Login Failed")}
+//       useOneTap
+//     />
+//   );
+// };
+
+// export default ZkLogin;
+
+
 import React from "react";
 import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
 import { jwtToAddress } from "@mysten/sui/zklogin";
@@ -63,13 +119,15 @@ const ZkLogin: React.FC = () => {
 
   const handleZkLogin = async (credential: string) => {
     try {
-      const userSalt = BigInt("12345678901234567890");
+      const userSalt = BigInt("12345678901234567890"); // Replace with dynamic salt in prod
       const address = jwtToAddress(credential, userSalt);
 
+      // ✅ Save login state
       localStorage.setItem("zklogin_loggedin", "true");
       localStorage.setItem("zkloginWallet", address);
       localStorage.setItem("zkloginJWT", credential);
 
+      // ✅ Send to backend
       const res = await fetch(`${host}/api/conversia/users`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -82,7 +140,8 @@ const ZkLogin: React.FC = () => {
       const data = await res.json();
       console.log("✅ ZK user created or verified:", data);
 
-      navigate("/"); // ✅ This must be hit
+      // ✅ Redirect to main page
+      navigate("/");
     } catch (err) {
       console.error("❌ zkLogin failed:", err);
     }
@@ -91,15 +150,17 @@ const ZkLogin: React.FC = () => {
   return (
     <GoogleLogin
       onSuccess={(response: CredentialResponse) => {
-        console.log("✅ Google login success", response);
+        console.log("✅ Google login success:", response);
         if (response.credential) {
           handleZkLogin(response.credential);
         } else {
-          console.error("❌ Missing credential from Google");
+          console.error("❌ Missing credential field from Google");
         }
       }}
-      onError={() => console.error("❌ Google Login Failed")}
-      useOneTap
+      onError={() => {
+        console.error("❌ Google Login Failed (popup closed or blocked)");
+      }}
+      // 🔥 FIXED: remove useOneTap to prevent AbortError issues
     />
   );
 };
