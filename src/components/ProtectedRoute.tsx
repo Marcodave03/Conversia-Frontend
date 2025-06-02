@@ -174,6 +174,57 @@
 
 
 
+// import React, { useEffect, useState } from "react";
+// import { Navigate } from "react-router-dom";
+// import { useWallet } from "@suiet/wallet-kit";
+
+// const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+//   const wallet = useWallet();
+//   const [isReady, setIsReady] = useState(false);
+//   const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+//   const checkAuth = () => {
+//     const storedBypass = localStorage.getItem("bypassWallet");
+//     const storedZkWallet = localStorage.getItem("zkloginWallet");
+//     const resolvedWallet = wallet.account?.address ?? storedBypass ?? storedZkWallet;
+
+//     console.log("🔐 [ProtectedRoute] Resolved:", resolvedWallet);
+//     console.log("  ⤷ wallet.account?.address:", wallet.account?.address);
+//     console.log("  ⤷ bypassWallet:", storedBypass);
+//     console.log("  ⤷ zkloginWallet:", storedZkWallet);
+
+//     const valid = resolvedWallet?.startsWith("0x") === true;
+//     setIsAuthenticated(valid); 
+//     setIsReady(true);
+//   };
+
+//   useEffect(() => {
+//     checkAuth(); // initial check
+//     window.addEventListener("zklogin-success", checkAuth); // listen to zkLogin event
+
+//     // Optional: delay to allow for late localStorage sync
+//     const fallbackTimer = setTimeout(() => checkAuth(), 300);
+
+//     return () => {
+//       clearTimeout(fallbackTimer);
+//       window.removeEventListener("zklogin-success", checkAuth);
+//     };
+//   }, [wallet.account?.address]);
+
+//   if (!isReady) return null;
+
+//   if (!isAuthenticated) {
+//     console.log("🔄 Redirecting to /landing...");
+//   } else {
+//     console.log("✅ Access granted to protected route");
+//   }
+
+//   return isAuthenticated ? <>{children}</> : <Navigate to="/landing" />;
+// };
+
+// export default ProtectedRoute;
+
+
 import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useWallet } from "@suiet/wallet-kit";
@@ -183,26 +234,29 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
   const [isReady, setIsReady] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const checkAuth = () => {
-    const storedBypass = localStorage.getItem("bypassWallet");
-    const storedZkWallet = localStorage.getItem("zkloginWallet");
-    const resolvedWallet = wallet.account?.address ?? storedBypass ?? storedZkWallet;
-
-    console.log("🔐 [ProtectedRoute] Resolved:", resolvedWallet);
-    console.log("  ⤷ wallet.account?.address:", wallet.account?.address);
-    console.log("  ⤷ bypassWallet:", storedBypass);
-    console.log("  ⤷ zkloginWallet:", storedZkWallet);
-
-    const valid = resolvedWallet?.startsWith("0x") === true;
-    setIsAuthenticated(valid); 
-    setIsReady(true);
-  };
-
   useEffect(() => {
-    checkAuth(); // initial check
-    window.addEventListener("zklogin-success", checkAuth); // listen to zkLogin event
+    const checkAuth = () => {
+      const storedBypass = localStorage.getItem("bypassWallet");
+      const storedZkWallet = localStorage.getItem("zkloginWallet");
 
-    // Optional: delay to allow for late localStorage sync
+      const resolvedWallet =
+        wallet.account?.address ?? storedBypass ?? storedZkWallet;
+
+      console.log("🔐 [ProtectedRoute] Resolved:", resolvedWallet);
+      console.log("  ⤷ wallet.account?.address:", wallet.account?.address);
+      console.log("  ⤷ bypassWallet:", storedBypass);
+      console.log("  ⤷ zkloginWallet:", storedZkWallet);
+
+      const valid = resolvedWallet?.startsWith("0x") === true;
+      setIsAuthenticated(valid);
+      setIsReady(true);
+    };
+
+    checkAuth(); // run once immediately
+
+    window.addEventListener("zklogin-success", checkAuth);
+
+    // fallback timer in case wallet/account not populated yet
     const fallbackTimer = setTimeout(() => checkAuth(), 300);
 
     return () => {
@@ -211,15 +265,21 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
     };
   }, [wallet.account?.address]);
 
-  if (!isReady) return null;
+  if (!isReady) {
+    return (
+      <div className="text-white flex justify-center items-center h-screen">
+        ⏳ Checking authentication...
+      </div>
+    );
+  }
 
   if (!isAuthenticated) {
     console.log("🔄 Redirecting to /landing...");
-  } else {
-    console.log("✅ Access granted to protected route");
+    return <Navigate to="/landing" replace />;
   }
 
-  return isAuthenticated ? <>{children}</> : <Navigate to="/landing" />;
+  console.log("✅ Access granted to protected route");
+  return <>{children}</>;
 };
 
 export default ProtectedRoute;
