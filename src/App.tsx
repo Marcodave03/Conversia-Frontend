@@ -375,6 +375,14 @@ const App: React.FC<InterviewProps> = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  if (!walletAddress) {
+    return (
+      <div className="text-white flex justify-center items-center h-screen">
+        ⏳ Resolving wallet address...
+      </div>
+    );
+  }
+
   return (
     <>
       <AnimatePresence>
