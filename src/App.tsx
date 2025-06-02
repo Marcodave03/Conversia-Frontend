@@ -24,11 +24,16 @@ type ChatHistoryItem = {
 };
 
 const App: React.FC<InterviewProps> = () => {
+  //const wallet = useWallet();
+  // const storedZkWallet = localStorage.getItem("zkloginWallet");
+  // const storedBypass = localStorage.getItem("bypassWallet");
+  // const walletAddress =
+  //   wallet.account?.address ?? storedBypass ?? storedZkWallet;
   const wallet = useWallet();
-  const storedZkWallet = localStorage.getItem("zkloginWallet");
   const storedBypass = localStorage.getItem("bypassWallet");
-  const walletAddress =
-    wallet.account?.address ?? storedBypass ?? storedZkWallet;
+
+  const walletAddress = wallet.account?.address ?? storedBypass;
+
   // const wallet = useWallet();
   const [modelId, setModelId] = useState<number>(1);
   const [userId, setUserId] = useState<number>();
