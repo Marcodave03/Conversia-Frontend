@@ -56,37 +56,41 @@ const App: React.FC<InterviewProps> = () => {
   }, []);
 
   useEffect(() => {
-    const ensureUserExists = async () => {
-      const walletAddress = wallet.account?.address;
-      if (!walletAddress) return;
+  const ensureUserExists = async () => {
+    if (!walletAddress) return;
 
-      try {
-        // Create or get user by wallet address
-        const res = await fetch(`${host}/api/conversia/users`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            sui_id: walletAddress,
-            username: "anonymous", // or get username from somewhere else
-          }),
-        });
+    try {
+      const res = await fetch(`${host}/api/conversia/users`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sui_id: walletAddress,
+          username: "anonymous",
+        }),
+      });
 
-        const data = await res.json();
-        if (data.user?.user_id) {
-          setUserId(data.user.user_id);
-        }
-      } catch (err) {
-        console.error("Failed to ensure user:", err);
+      const data = await res.json();
+      if (data.user?.user_id) {
+        setUserId(data.user.user_id);
       }
-    };
-
-    // if (wallet.status === "connected") {
-    //   ensureUserExists();
-    // }
-    if (walletAddress) {
-      ensureUserExists();
+    } catch (err) {
+      console.error("Failed to ensure user:", err);
     }
-  }, [walletAddress]);
+  };
+
+  if (walletAddress) {
+    ensureUserExists();
+  }
+}, [walletAddress]);
+
+useEffect(() => {
+  console.log("Wallet Status:", wallet.status);
+  console.log("wallet.account?.address:", wallet.account?.address);
+  console.log("storedBypass:", storedBypass);
+  console.log("storedZkWallet:", storedZkWallet);
+  console.log("Resolved walletAddress:", walletAddress);
+}, []);
+
 
   useEffect(() => {
     const loadChatHistory = async () => {
