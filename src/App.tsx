@@ -32,7 +32,8 @@ const App: React.FC<InterviewProps> = () => {
   const wallet = useWallet();
   const storedBypass = localStorage.getItem("bypassWallet");
   const storedZkWallet = localStorage.getItem("zkloginWallet");
-  const walletAddress = wallet.account?.address ?? storedBypass ?? storedZkWallet;
+  //const walletAddress = wallet.account?.address ?? storedBypass ?? storedZkWallet;
+  const [walletAddress, setWalletAddress] = useState<string | null>(null);
 
   // const wallet = useWallet();
   const [modelId, setModelId] = useState<number>(1);
@@ -54,6 +55,13 @@ const App: React.FC<InterviewProps> = () => {
 
     return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+  const resolvedAddress =
+    wallet.account?.address ?? storedBypass ?? storedZkWallet;
+  setWalletAddress(resolvedAddress ?? null);
+}, [wallet.account?.address, storedBypass, storedZkWallet]);
+
 
   useEffect(() => {
   const ensureUserExists = async () => {
