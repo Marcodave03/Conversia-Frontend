@@ -31,8 +31,8 @@ const App: React.FC<InterviewProps> = () => {
   //   wallet.account?.address ?? storedBypass ?? storedZkWallet;
   const wallet = useWallet();
   const storedBypass = localStorage.getItem("bypassWallet");
-
-  const walletAddress = wallet.account?.address ?? storedBypass;
+  const storedZkWallet = localStorage.getItem("zkloginWallet");
+  const walletAddress = wallet.account?.address ?? storedBypass ?? storedZkWallet;
 
   // const wallet = useWallet();
   const [modelId, setModelId] = useState<number>(1);
@@ -86,7 +86,7 @@ const App: React.FC<InterviewProps> = () => {
     if (walletAddress) {
       ensureUserExists();
     }
-  }, [wallet]);
+  }, [walletAddress]);
 
   useEffect(() => {
     const loadChatHistory = async () => {
