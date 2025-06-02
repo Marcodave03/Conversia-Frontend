@@ -40,6 +40,33 @@
 // export default ProtectedRoute;
 
 
+// import React, { useEffect, useState } from 'react';
+// import { Navigate } from 'react-router-dom';
+// import { useWallet } from '@suiet/wallet-kit';
+
+// const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+//   const wallet = useWallet();
+//   const [isReady, setIsReady] = useState(false);
+//   const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+//   useEffect(() => {
+//     // ✅ Only wallet login currently tracked
+//     if (wallet.status === 'connected') {
+//       setIsAuthenticated(true);
+//     } else {
+//       setIsAuthenticated(false);
+//     }
+//     setIsReady(true);
+//   }, [wallet.status]);
+
+//   if (!isReady) return null;
+
+//   return isAuthenticated ? <>{children}</> : <Navigate to="/landing" />;
+// };
+
+// export default ProtectedRoute;
+
+
 import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useWallet } from '@suiet/wallet-kit';
@@ -50,8 +77,9 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    // ✅ Only wallet login currently tracked
-    if (wallet.status === 'connected') {
+    const zkLoginFlag = localStorage.getItem("zklogin_loggedin");
+
+    if (wallet.status === 'connected' || zkLoginFlag === 'true') {
       setIsAuthenticated(true);
     } else {
       setIsAuthenticated(false);
