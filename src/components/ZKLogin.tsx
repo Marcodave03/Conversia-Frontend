@@ -115,7 +115,7 @@ import { jwtToAddress } from "@mysten/sui/zklogin";
 const host = import.meta.env.VITE_HOST;
 
 const ZkLogin: React.FC = () => {
-//   const navigate = useNavigate();
+// const navigate = useNavigate();
 
   const handleZkLogin = async (credential: string) => {
     try {
@@ -141,9 +141,7 @@ const ZkLogin: React.FC = () => {
       console.log("✅ ZK user created or verified:", data);
 
       // ✅ Redirect to main page
-      setTimeout(() => {
-        window.location.href = "/";
-        }, 100);
+      window.location.replace("/");
     } catch (err) {
       console.error("❌ zkLogin failed:", err);
     }

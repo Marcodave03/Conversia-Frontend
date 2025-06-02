@@ -124,48 +124,101 @@
 
 // export default ProtectedRoute;
 
+// import React, { useEffect, useState } from "react";
+// import { Navigate } from "react-router-dom";
+// import { useWallet } from "@suiet/wallet-kit";
+
+// const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
+//   children,
+// }) => {
+//   const wallet = useWallet();
+//   const [isReady, setIsReady] = useState(false);
+//   const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+//   useEffect(() => {
+//     const checkAuth = () => {
+//       const storedBypass = localStorage.getItem("bypassWallet");
+//       const storedZkWallet = localStorage.getItem("zkloginWallet");
+//       const resolvedWallet =
+//         wallet.account?.address ?? storedBypass ?? storedZkWallet;
+
+//       console.log("🔐 [ProtectedRoute] Resolved:", resolvedWallet);
+
+//       if (resolvedWallet?.startsWith("0x")) {
+//         setIsAuthenticated(true);
+//       } else {
+//         setIsAuthenticated(false);
+//       }
+
+//       setIsReady(true);
+//     };
+
+//     checkAuth(); // initial run
+//     window.addEventListener("zklogin-success", checkAuth); // 🆕 re-run on zkLogin
+
+//     return () => {
+//       window.removeEventListener("zklogin-success", checkAuth); // 🆕 cleanup
+//     };
+//   }, [wallet.account?.address]);
+
+//   if (!isReady) return null;
+
+//   if (!isAuthenticated && isReady) {
+//     console.log("🔄 Redirecting to /landing...");
+//   }
+//   return isAuthenticated ? <>{children}</> : <Navigate to="/landing" />;
+// };
+
+// export default ProtectedRoute;
+
+
+
+
 import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useWallet } from "@suiet/wallet-kit";
 
-const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const wallet = useWallet();
   const [isReady, setIsReady] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+  const checkAuth = () => {
+    const storedBypass = localStorage.getItem("bypassWallet");
+    const storedZkWallet = localStorage.getItem("zkloginWallet");
+    const resolvedWallet = wallet.account?.address ?? storedBypass ?? storedZkWallet;
+
+    console.log("🔐 [ProtectedRoute] Resolved:", resolvedWallet);
+    console.log("  ⤷ wallet.account?.address:", wallet.account?.address);
+    console.log("  ⤷ bypassWallet:", storedBypass);
+    console.log("  ⤷ zkloginWallet:", storedZkWallet);
+
+    const valid = resolvedWallet?.startsWith("0x") === true;
+    setIsAuthenticated(valid); 
+    setIsReady(true);
+  };
+
   useEffect(() => {
-    const checkAuth = () => {
-      const storedBypass = localStorage.getItem("bypassWallet");
-      const storedZkWallet = localStorage.getItem("zkloginWallet");
-      const resolvedWallet =
-        wallet.account?.address ?? storedBypass ?? storedZkWallet;
+    checkAuth(); // initial check
+    window.addEventListener("zklogin-success", checkAuth); // listen to zkLogin event
 
-      console.log("🔐 [ProtectedRoute] Resolved:", resolvedWallet);
-
-      if (resolvedWallet?.startsWith("0x")) {
-        setIsAuthenticated(true);
-      } else {
-        setIsAuthenticated(false);
-      }
-
-      setIsReady(true);
-    };
-
-    checkAuth(); // initial run
-    window.addEventListener("zklogin-success", checkAuth); // 🆕 re-run on zkLogin
+    // Optional: delay to allow for late localStorage sync
+    const fallbackTimer = setTimeout(() => checkAuth(), 300);
 
     return () => {
-      window.removeEventListener("zklogin-success", checkAuth); // 🆕 cleanup
+      clearTimeout(fallbackTimer);
+      window.removeEventListener("zklogin-success", checkAuth);
     };
   }, [wallet.account?.address]);
 
   if (!isReady) return null;
 
-  if (!isAuthenticated && isReady) {
+  if (!isAuthenticated) {
     console.log("🔄 Redirecting to /landing...");
+  } else {
+    console.log("✅ Access granted to protected route");
   }
+
   return isAuthenticated ? <>{children}</> : <Navigate to="/landing" />;
 };
 
