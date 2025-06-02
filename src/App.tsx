@@ -30,8 +30,8 @@ const App: React.FC<InterviewProps> = () => {
   // const walletAddress =
   //   wallet.account?.address ?? storedBypass ?? storedZkWallet;
   const wallet = useWallet();
-  const storedBypass = localStorage.getItem("bypassWallet");
-  const storedZkWallet = localStorage.getItem("zkloginWallet");
+  // const storedBypass = localStorage.getItem("bypassWallet");
+  // const storedZkWallet = localStorage.getItem("zkloginWallet");
   //const walletAddress = wallet.account?.address ?? storedBypass ?? storedZkWallet;
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
 
@@ -57,48 +57,47 @@ const App: React.FC<InterviewProps> = () => {
   }, []);
 
   useEffect(() => {
-  const resolvedAddress =
-    wallet.account?.address ?? storedBypass ?? storedZkWallet;
-  setWalletAddress(resolvedAddress ?? null);
-}, [wallet.account?.address, storedBypass, storedZkWallet]);
+    const storedBypass = localStorage.getItem("bypassWallet");
+    const storedZkWallet = localStorage.getItem("zkloginWallet");
 
+    const resolvedAddress =
+      wallet.account?.address ?? storedBypass ?? storedZkWallet;
+
+    console.log("📦 resolved wallet.address:", wallet.account?.address);
+    console.log("📦 local bypass:", storedBypass);
+    console.log("📦 local zk:", storedZkWallet);
+    console.log("✅ Final resolved address:", resolvedAddress);
+
+    setWalletAddress(resolvedAddress ?? null);
+  }, [wallet.account?.address]);
 
   useEffect(() => {
-  const ensureUserExists = async () => {
-    if (!walletAddress) return;
+    const ensureUserExists = async () => {
+      if (!walletAddress) return;
 
-    try {
-      const res = await fetch(`${host}/api/conversia/users`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          sui_id: walletAddress,
-          username: "anonymous",
-        }),
-      });
+      try {
+        const res = await fetch(`${host}/api/conversia/users`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            sui_id: walletAddress,
+            username: "anonymous",
+          }),
+        });
 
-      const data = await res.json();
-      if (data.user?.user_id) {
-        setUserId(data.user.user_id);
+        const data = await res.json();
+        if (data.user?.user_id) {
+          setUserId(data.user.user_id);
+        }
+      } catch (err) {
+        console.error("Failed to ensure user:", err);
       }
-    } catch (err) {
-      console.error("Failed to ensure user:", err);
+    };
+
+    if (walletAddress) {
+      ensureUserExists();
     }
-  };
-
-  if (walletAddress) {
-    ensureUserExists();
-  }
-}, [walletAddress]);
-
-useEffect(() => {
-  console.log("Wallet Status:", wallet.status);
-  console.log("wallet.account?.address:", wallet.account?.address);
-  console.log("storedBypass:", storedBypass);
-  console.log("storedZkWallet:", storedZkWallet);
-  console.log("Resolved walletAddress:", walletAddress);
-}, []);
-
+  }, [walletAddress]);
 
   useEffect(() => {
     const loadChatHistory = async () => {
