@@ -94,6 +94,40 @@
 
 // export default ProtectedRoute;
 
+// import React, { useEffect, useState } from "react";
+// import { Navigate } from "react-router-dom";
+// import { useWallet } from "@suiet/wallet-kit";
+
+// const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+//   const wallet = useWallet();
+//   const [isReady, setIsReady] = useState(false);
+//   const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+//   useEffect(() => {
+//     const zkLoginFlag = localStorage.getItem("zklogin_loggedin");
+//     const zkWallet = localStorage.getItem("zkloginWallet");
+
+//     const connectedViaZk = zkLoginFlag === "true" && zkWallet?.startsWith("0x");
+//     const connectedViaWallet = wallet.status === "connected";
+
+//     if (connectedViaWallet || connectedViaZk) {
+//       setIsAuthenticated(true);
+//     } else {
+//       setIsAuthenticated(false);
+//     }
+
+//     setIsReady(true);
+//   }, [wallet.status]);
+
+//   if (!isReady) return null;
+
+//   return isAuthenticated ? <>{children}</> : <Navigate to="/landing" />;
+// };
+
+// export default ProtectedRoute;
+
+
+
 import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useWallet } from "@suiet/wallet-kit";
@@ -104,20 +138,20 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    const zkLoginFlag = localStorage.getItem("zklogin_loggedin");
-    const zkWallet = localStorage.getItem("zkloginWallet");
+    const storedBypass = localStorage.getItem("bypassWallet");
+    const storedZkWallet = localStorage.getItem("zkloginWallet");
+    const resolvedWallet = wallet.account?.address ?? storedBypass ?? storedZkWallet;
 
-    const connectedViaZk = zkLoginFlag === "true" && zkWallet?.startsWith("0x");
-    const connectedViaWallet = wallet.status === "connected";
+    console.log("🔐 [ProtectedRoute] Resolved:", resolvedWallet);
 
-    if (connectedViaWallet || connectedViaZk) {
+    if (resolvedWallet?.startsWith("0x")) {
       setIsAuthenticated(true);
     } else {
       setIsAuthenticated(false);
     }
 
     setIsReady(true);
-  }, [wallet.status]);
+  }, [wallet.account?.address]); // Trigger this again if wallet connects
 
   if (!isReady) return null;
 
