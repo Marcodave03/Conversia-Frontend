@@ -14,6 +14,9 @@ const ZkLogin: React.FC = () => {
       const userSalt = BigInt("12345678901234567890"); // 🔒 Replace with real salt logic
       const address = jwtToAddress(credential, userSalt);
 
+      // ✅ Save login state for ProtectedRoute
+      localStorage.setItem("zklogin_loggedin", "true");
+
       // Create or verify user via backend
       const res = await fetch(`${host}/api/conversia/users`, {
         method: "POST",
