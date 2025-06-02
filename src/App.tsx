@@ -57,18 +57,29 @@ const App: React.FC<InterviewProps> = () => {
   }, []);
 
   useEffect(() => {
-    const storedBypass = localStorage.getItem("bypassWallet");
-    const storedZkWallet = localStorage.getItem("zkloginWallet");
+    const checkWallet = () => {
+      const storedBypass = localStorage.getItem("bypassWallet");
+      const storedZkWallet = localStorage.getItem("zkloginWallet");
 
-    const resolvedAddress =
-      wallet.account?.address ?? storedBypass ?? storedZkWallet;
+      const resolvedAddress =
+        wallet.account?.address ?? storedBypass ?? storedZkWallet;
 
-    console.log("📦 resolved wallet.address:", wallet.account?.address);
-    console.log("📦 local bypass:", storedBypass);
-    console.log("📦 local zk:", storedZkWallet);
-    console.log("✅ Final resolved address:", resolvedAddress);
+      console.log("📦 resolved wallet.address:", wallet.account?.address);
+      console.log("📦 local bypass:", storedBypass);
+      console.log("📦 local zk:", storedZkWallet);
+      console.log("✅ Final resolved address:", resolvedAddress);
 
-    setWalletAddress(resolvedAddress ?? null);
+      setWalletAddress(resolvedAddress ?? null);
+    };
+
+    checkWallet();
+
+    // ✅ Re-run if zklogin fires
+    window.addEventListener("zklogin-success", checkWallet);
+
+    return () => {
+      window.removeEventListener("zklogin-success", checkWallet);
+    };
   }, [wallet.account?.address]);
 
   useEffect(() => {
