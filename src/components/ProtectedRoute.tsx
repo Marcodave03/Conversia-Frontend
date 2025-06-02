@@ -4,8 +4,11 @@ import { useWallet } from '@suiet/wallet-kit';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const wallet = useWallet();
+  const zkWallet = localStorage.getItem("zkloginWallet");
 
-  return wallet.status === 'connected' ? <>{children}</> : <Navigate to="/landing" />;
+  const isAuthenticated = wallet.status === 'connected' || !!zkWallet;
+
+  return isAuthenticated ? <>{children}</> : <Navigate to="/landing" />;
 };
 
 export default ProtectedRoute;

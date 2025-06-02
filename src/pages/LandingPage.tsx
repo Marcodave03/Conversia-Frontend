@@ -23,7 +23,7 @@ const LandingPage: React.FC = () => {
   const handleZkLogin = async (credential: string) => {
     try {
       // const decoded = jwtDecode(credential);
-      const userSalt = "fixedSalt123"; // ⚠️ Replace with secure logic in production
+      const userSalt = BigInt("12345678901234567890"); // ⚠️ Replace with secure logic in production
 
       const address = jwtToAddress(credential, userSalt);
       localStorage.setItem("zkloginWallet", address);
