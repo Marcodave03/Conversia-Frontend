@@ -56,22 +56,38 @@ const App: React.FC<InterviewProps> = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  // useEffect(() => {
+  //   const storedBypass = localStorage.getItem("bypassWallet");
+  //   const storedZkWallet = localStorage.getItem("zkloginWallet");
+
+  //   const resolvedAddress =
+  //     wallet.account?.address ?? storedBypass ?? storedZkWallet;
+
+  //   console.log("📦 resolved wallet.address:", wallet.account?.address);
+  //   console.log("📦 local bypass:", storedBypass);
+  //   console.log("📦 local zk:", storedZkWallet);
+  //   console.log("✅ Final resolved address:", resolvedAddress);
+
+  //   if (resolvedAddress?.startsWith("0x")) {
+  //     setWalletAddress(resolvedAddress);
+  //   }
+  // }, []);
+
   useEffect(() => {
-    const storedBypass = localStorage.getItem("bypassWallet");
-    const storedZkWallet = localStorage.getItem("zkloginWallet");
+  const resolveAddress = () => {
+    return (
+      wallet.account?.address ||
+      localStorage.getItem("bypassWallet") ||
+      localStorage.getItem("zkloginWallet")
+    );
+  };
 
-    const resolvedAddress =
-      wallet.account?.address ?? storedBypass ?? storedZkWallet;
-
-    console.log("📦 resolved wallet.address:", wallet.account?.address);
-    console.log("📦 local bypass:", storedBypass);
-    console.log("📦 local zk:", storedZkWallet);
-    console.log("✅ Final resolved address:", resolvedAddress);
-
-    if (resolvedAddress?.startsWith("0x")) {
-      setWalletAddress(resolvedAddress);
-    }
-  }, []);
+  const address = resolveAddress();
+  console.log("✅ Final resolved walletAddress in App:", address);
+  if (address?.startsWith("0x")) {
+    setWalletAddress(address);
+  }
+}, [wallet.account]);
 
   useEffect(() => {
     const handler = () => {

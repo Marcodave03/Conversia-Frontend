@@ -171,9 +171,6 @@
 
 // export default ProtectedRoute;
 
-
-
-
 // import React, { useEffect, useState } from "react";
 // import { Navigate } from "react-router-dom";
 // import { useWallet } from "@suiet/wallet-kit";
@@ -194,7 +191,7 @@
 //     console.log("  ⤷ zkloginWallet:", storedZkWallet);
 
 //     const valid = resolvedWallet?.startsWith("0x") === true;
-//     setIsAuthenticated(valid); 
+//     setIsAuthenticated(valid);
 //     setIsReady(true);
 //   };
 
@@ -224,46 +221,72 @@
 
 // export default ProtectedRoute;
 
-
 import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useWallet } from "@suiet/wallet-kit";
 
-const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const wallet = useWallet();
   const [isReady, setIsReady] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+  // useEffect(() => {
+  //   const getResolvedAddress = () => {
+  //     return (
+  //       wallet.account?.address ||
+  //       localStorage.getItem("bypassWallet") ||
+  //       localStorage.getItem("zkloginWallet")
+  //     );
+  //   };
+
+  //   const checkAuth = () => {
+  //     const resolvedWallet = getResolvedAddress();
+  //     const valid = resolvedWallet?.startsWith("0x") == true;
+  //     console.log("🔐 [ProtectedRoute] Final resolved wallet:", resolvedWallet);
+  //     setIsAuthenticated(valid);
+  //     setIsReady(true);
+  //   };
+
+  //   checkAuth(); // run once immediately
+
+  //   window.addEventListener("zklogin-success", checkAuth);
+
+  //   // fallback timer in case wallet/account not populated yet
+  //   const fallbackTimer = setTimeout(() => checkAuth(), 300);
+
+  //   return () => {
+  //     clearTimeout(fallbackTimer);
+  //     window.removeEventListener("zklogin-success", checkAuth);
+  //   };
+  // }, [wallet.account?.address]);
+
   useEffect(() => {
+    const getResolvedAddress = () => {
+      return (
+        wallet.account?.address ||
+        localStorage.getItem("bypassWallet") ||
+        localStorage.getItem("zkloginWallet")
+      );
+    };
+
     const checkAuth = () => {
-      const storedBypass = localStorage.getItem("bypassWallet");
-      const storedZkWallet = localStorage.getItem("zkloginWallet");
-
-      const resolvedWallet =
-        wallet.account?.address ?? storedBypass ?? storedZkWallet;
-
-      console.log("🔐 [ProtectedRoute] Resolved:", resolvedWallet);
-      console.log("  ⤷ wallet.account?.address:", wallet.account?.address);
-      console.log("  ⤷ bypassWallet:", storedBypass);
-      console.log("  ⤷ zkloginWallet:", storedZkWallet);
-
+      const resolvedWallet = getResolvedAddress();
       const valid = resolvedWallet?.startsWith("0x") === true;
+      console.log("🔐 [ProtectedRoute] Final resolved wallet:", resolvedWallet);
       setIsAuthenticated(valid);
       setIsReady(true);
     };
 
-    checkAuth(); // run once immediately
-
+    const delay = setTimeout(checkAuth, 100); // slight delay to let localStorage sync
     window.addEventListener("zklogin-success", checkAuth);
 
-    // fallback timer in case wallet/account not populated yet
-    const fallbackTimer = setTimeout(() => checkAuth(), 300);
-
     return () => {
-      clearTimeout(fallbackTimer);
+      clearTimeout(delay);
       window.removeEventListener("zklogin-success", checkAuth);
     };
-  }, [wallet.account?.address]);
+  }, []);
 
   if (!isReady) {
     return (
