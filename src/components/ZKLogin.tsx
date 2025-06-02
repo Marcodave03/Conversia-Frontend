@@ -126,7 +126,7 @@ const ZkLogin: React.FC = () => {
       localStorage.setItem("zklogin_loggedin", "true");
       localStorage.setItem("zkloginWallet", address);
       localStorage.setItem("zkloginJWT", credential);
-
+      window.dispatchEvent(new Event("zklogin-success"));
       // ✅ Send to backend
       const res = await fetch(`${host}/api/conversia/users`, {
         method: "POST",
@@ -141,7 +141,7 @@ const ZkLogin: React.FC = () => {
       console.log("✅ ZK user created or verified:", data);
 
       // ✅ Redirect to main page
-      navigate("/");
+      setTimeout(() => navigate("/"), 100); 
     } catch (err) {
       console.error("❌ zkLogin failed:", err);
     }

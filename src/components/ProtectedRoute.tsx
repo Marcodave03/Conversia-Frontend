@@ -39,7 +39,6 @@
 
 // export default ProtectedRoute;
 
-
 // import React, { useEffect, useState } from 'react';
 // import { Navigate } from 'react-router-dom';
 // import { useWallet } from '@suiet/wallet-kit';
@@ -65,7 +64,6 @@
 // };
 
 // export default ProtectedRoute;
-
 
 // import React, { useEffect, useState } from 'react';
 // import { Navigate } from 'react-router-dom';
@@ -126,32 +124,58 @@
 
 // export default ProtectedRoute;
 
-
-
 import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useWallet } from "@suiet/wallet-kit";
 
-const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const wallet = useWallet();
   const [isReady, setIsReady] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
+  // useEffect(() => {
+  //   const storedBypass = localStorage.getItem("bypassWallet");
+  //   const storedZkWallet = localStorage.getItem("zkloginWallet");
+  //   const resolvedWallet = wallet.account?.address ?? storedBypass ?? storedZkWallet;
+
+  //   console.log("🔐 [ProtectedRoute] Resolved:", resolvedWallet);
+
+  //   if (resolvedWallet?.startsWith("0x")) {
+  //     setIsAuthenticated(true);
+  //   } else {
+  //     setIsAuthenticated(false);
+  //   }
+
+  //   setIsReady(true);
+  // }, [wallet.account?.address]); // Trigger this again if wallet connects
+
   useEffect(() => {
-    const storedBypass = localStorage.getItem("bypassWallet");
-    const storedZkWallet = localStorage.getItem("zkloginWallet");
-    const resolvedWallet = wallet.account?.address ?? storedBypass ?? storedZkWallet;
+    const checkAuth = () => {
+      const storedBypass = localStorage.getItem("bypassWallet");
+      const storedZkWallet = localStorage.getItem("zkloginWallet");
+      const resolvedWallet =
+        wallet.account?.address ?? storedBypass ?? storedZkWallet;
 
-    console.log("🔐 [ProtectedRoute] Resolved:", resolvedWallet);
+      console.log("🔐 [ProtectedRoute] Resolved:", resolvedWallet);
 
-    if (resolvedWallet?.startsWith("0x")) {
-      setIsAuthenticated(true);
-    } else {
-      setIsAuthenticated(false);
-    }
+      if (resolvedWallet?.startsWith("0x")) {
+        setIsAuthenticated(true);
+      } else {
+        setIsAuthenticated(false);
+      }
 
-    setIsReady(true);
-  }, [wallet.account?.address]); // Trigger this again if wallet connects
+      setIsReady(true);
+    };
+
+    checkAuth(); // initial run
+    window.addEventListener("zklogin-success", checkAuth); // 🆕 re-run on zkLogin
+
+    return () => {
+      window.removeEventListener("zklogin-success", checkAuth); // 🆕 cleanup
+    };
+  }, [wallet.account?.address]);
 
   if (!isReady) return null;
 
