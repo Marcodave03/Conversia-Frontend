@@ -293,13 +293,13 @@
 
 import type React from "react"
 import { useEffect, useState } from "react"
-// import { Navigate } from "react-router-dom"
+import { Navigate } from "react-router-dom"
 import { useWallet } from "@suiet/wallet-kit"
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const wallet = useWallet()
   const [isReady, setIsReady] = useState(false)
-  const [, setIsAuthenticated] = useState(false)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
 
   const getResolvedAddress = () => {
     return wallet.account?.address || localStorage.getItem("bypassWallet") || localStorage.getItem("zkloginWallet")
@@ -355,10 +355,10 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
     return <div className="text-white flex justify-center items-center h-screen">⏳ Checking authentication...</div>
   }
 
-  // if (!isAuthenticated) {
-  //   console.log("🔄 Redirecting to /landing...")
-  //   return <Navigate to="/landing" replace />
-  // }
+  if (!isAuthenticated) {
+    console.log("🔄 Redirecting to /landing...")
+    return <Navigate to="/landing" replace />
+  }
 
   console.log("✅ Access granted to protected route")
   return <>{children}</>
