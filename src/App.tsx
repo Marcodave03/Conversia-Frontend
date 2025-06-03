@@ -34,6 +34,7 @@ const App: React.FC<InterviewProps> = () => {
   // const storedZkWallet = localStorage.getItem("zkloginWallet");
   //const walletAddress = wallet.account?.address ?? storedBypass ?? storedZkWallet;
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
+  const [walletResolved, setWalletResolved] = useState(false);
 
   // const wallet = useWallet();
   const [modelId, setModelId] = useState<number>(1);
@@ -73,21 +74,41 @@ const App: React.FC<InterviewProps> = () => {
   //   }
   // }, []);
 
-  useEffect(() => {
-  const resolveAddress = () => {
-    return (
-      wallet.account?.address ||
-      localStorage.getItem("bypassWallet") ||
-      localStorage.getItem("zkloginWallet")
-    );
-  };
+  //   useEffect(() => {
+  //   const resolveAddress = () => {
+  //     return (
+  //       wallet.account?.address ||
+  //       localStorage.getItem("bypassWallet") ||
+  //       localStorage.getItem("zkloginWallet")
+  //     );
+  //   };
 
-  const address = resolveAddress();
-  console.log("✅ Final resolved walletAddress in App:", address);
-  if (address?.startsWith("0x")) {
-    setWalletAddress(address);
-  }
-}, [wallet.account]);
+  //   const address = resolveAddress();
+  //   console.log("✅ Final resolved walletAddress in App:", address);
+  //   if (address?.startsWith("0x")) {
+  //     setWalletAddress(address);
+  //   }
+  // }, [wallet.account]);
+
+  useEffect(() => {
+    const resolveAddress = () => {
+      const address =
+        wallet.account?.address ||
+        localStorage.getItem("bypassWallet") ||
+        localStorage.getItem("zkloginWallet");
+
+      console.log("✅ Final resolved walletAddress in App:", address);
+
+      if (address?.startsWith("0x")) {
+        setWalletAddress(address);
+      }
+
+      // ✅ Always mark wallet resolution as done, even if null
+      setWalletResolved(true);
+    };
+
+    resolveAddress();
+  }, [wallet.account]);
 
   useEffect(() => {
     const handler = () => {
@@ -391,10 +412,26 @@ const App: React.FC<InterviewProps> = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  if (!walletAddress) {
+  useEffect(() => {
+    if (walletResolved && !walletAddress) {
+      console.warn("⚠️ No valid wallet address found even after resolution.");
+    }
+  }, [walletResolved, walletAddress]);
+
+  if (!walletResolved) {
+    console.log("⏳ Waiting for wallet to resolve...");
     return (
       <div className="text-white flex justify-center items-center h-screen">
         ⏳ Resolving wallet address...
+      </div>
+    );
+  }
+
+  if (!userId) {
+    console.log("🔄 Waiting for user ID...");
+    return (
+      <div className="text-white flex justify-center items-center h-screen">
+        🔄 Loading user data...
       </div>
     );
   }
@@ -430,7 +467,7 @@ const App: React.FC<InterviewProps> = () => {
           setModelUrl={setModelUrl}
           setBackgroundUrl={setBackgroundUrl}
           setModelId={setModelId}
-          userId={userId!}
+          userId={userId}
         />
 
         {isMobile && (
