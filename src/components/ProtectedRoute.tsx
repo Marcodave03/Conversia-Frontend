@@ -293,7 +293,7 @@
 
 import type React from "react"
 import { useEffect, useState } from "react"
-import { Navigate } from "react-router-dom"
+// import { Navigate } from "react-router-dom"
 import { useWallet } from "@suiet/wallet-kit"
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
