@@ -49,6 +49,27 @@ const App: React.FC<InterviewProps> = () => {
   // const walletAddress = wallet.account?.address ?? storedBypass;
   const host = import.meta.env.VITE_HOST;
 
+  useEffect(() => {
+    const restoreSession = () => {
+      const zk = localStorage.getItem("zkloginWallet");
+      const uid = localStorage.getItem("userId");
+
+      if (zk?.startsWith("0x")) {
+        console.log("✅ Restoring zkLogin wallet from session:", zk);
+        setWalletAddress(zk);
+        setWalletResolved(true);
+      }
+
+      if (uid) {
+        console.log("✅ Restoring userId from session:", uid);
+        setUserId(parseInt(uid));
+        setUserFetched(true);
+      }
+    };
+
+    restoreSession();
+  }, []);
+
   // Hide intro after animation finishes
   useEffect(() => {
     const timer = setTimeout(() => {
