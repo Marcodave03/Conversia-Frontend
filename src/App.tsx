@@ -497,12 +497,16 @@ const App: React.FC<InterviewProps> = () => {
     );
   }
 
-  if (!walletResolved || !userFetched) {
+  if (!walletResolved) {
     return <div>🔄 Loading your profile...</div>;
   }
 
-  if (!userId) {
-    return <div>🔄 Loading your profile...</div>;
+  if (!userFetched || !userId) {
+    return (
+      <div className="text-white flex justify-center items-center h-screen">
+        🔄 Loading your profile...
+      </div>
+    );
   }
 
   return (
