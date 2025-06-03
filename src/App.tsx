@@ -578,6 +578,7 @@ const App: React.FC<InterviewProps> = () => {
   const [modelUrl, setModelUrl] = useState<string>("/models/girl1.glb")
   const [backgroundUrl, setBackgroundUrl] = useState<string>(bgImage)
   const [walletAddress, setWalletAddress] = useState<string | null>(null)
+  const [isZkLogin, setIsZkLogin] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false)
   const host = import.meta.env.VITE_HOST
 
@@ -600,9 +601,18 @@ const App: React.FC<InterviewProps> = () => {
   const bottomRef = useRef<HTMLDivElement | null>(null)
 
   // Simplified wallet resolution
+  // const resolveWalletAddress = (): string | null => {
+  //   return wallet.account?.address || localStorage.getItem("zkloginWallet") || localStorage.getItem("bypassWallet")
+  // }
+
   const resolveWalletAddress = (): string | null => {
-    return wallet.account?.address || localStorage.getItem("zkloginWallet") || localStorage.getItem("bypassWallet")
-  }
+    if (wallet.account?.address) return wallet.account.address;
+    if (localStorage.getItem("zkloginWallet")) {
+      setIsZkLogin(true); // Mark as zkLogin user
+      return localStorage.getItem("zkloginWallet");
+    }
+    return localStorage.getItem("bypassWallet");
+  };
 
   // Initialize wallet address and user
   useEffect(() => {
@@ -629,6 +639,14 @@ const App: React.FC<InterviewProps> = () => {
     window.addEventListener("zklogin-success", handleZkLoginSuccess)
     return () => window.removeEventListener("zklogin-success", handleZkLoginSuccess)
   }, [wallet.account?.address])
+
+  useEffect(() => {
+    if (isZkLogin && !userId) {
+      console.log("🔑 Initializing zkLogin session");
+      const address = localStorage.getItem("zkloginWallet");
+      if (address) createOrGetUser(address);
+    }
+  }, [isZkLogin, userId]);
 
   // Create or get user from backend
   const createOrGetUser = async (address: string) => {
