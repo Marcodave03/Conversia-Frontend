@@ -475,17 +475,13 @@ const App: React.FC<InterviewProps> = () => {
     );
   }
 
-  if (!userId) {
-    console.log("🔄 Waiting for user ID...");
+  if (!walletAddress || !userId) {
+    console.log("🔄 Waiting for wallet and user ID...");
     return (
       <div className="text-white flex justify-center items-center h-screen">
-        🔄 Loading user data...
+        🔄 Loading your profile...
       </div>
     );
-  }
-
-  if (!walletResolved || userId === undefined) {
-    return <div>🔄 Loading...</div>;
   }
 
   return (
