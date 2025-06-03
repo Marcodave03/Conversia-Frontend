@@ -497,13 +497,8 @@ const App: React.FC<InterviewProps> = () => {
     );
   }
 
-  if (!walletAddress || !userId) {
-    console.log("🔄 Waiting for wallet and user ID...");
-    return (
-      <div className="text-white flex justify-center items-center h-screen">
-        🔄 Loading your profile...
-      </div>
-    );
+  if (!walletResolved || !userFetched) {
+    return <div>🔄 Loading your profile...</div>;
   }
 
   return (
