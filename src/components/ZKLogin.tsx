@@ -144,7 +144,7 @@ const ZkLogin: React.FC = () => {
       console.log("✅ ZK user created or verified:", data);
 
       // ✅ Navigate using React Router
-      navigate("/"); // instead of window.location.replace
+      setTimeout(() => navigate("/"), 100); // instead of window.location.replace
     } catch (err) {
       console.error("❌ zkLogin failed:", err);
     }

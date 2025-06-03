@@ -484,6 +484,10 @@ const App: React.FC<InterviewProps> = () => {
     );
   }
 
+  if (!walletResolved || !userId) {
+    return <div className="text-white">Loading your chat session...</div>;
+  }
+
   return (
     <>
       <AnimatePresence>
