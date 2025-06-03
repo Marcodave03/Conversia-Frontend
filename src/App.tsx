@@ -35,6 +35,7 @@ const App: React.FC<InterviewProps> = () => {
   //const walletAddress = wallet.account?.address ?? storedBypass ?? storedZkWallet;
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
   const [walletResolved, setWalletResolved] = useState(false);
+  const [userFetched, setUserFetched] = useState(false);
 
   // const wallet = useWallet();
   const [modelId, setModelId] = useState<number>(1);
@@ -119,9 +120,37 @@ const App: React.FC<InterviewProps> = () => {
     return () => window.removeEventListener("zklogin-success", handler);
   }, []);
 
+  // useEffect(() => {
+  //   const ensureUserExists = async () => {
+  //     if (!walletAddress) return;
+
+  //     try {
+  //       const res = await fetch(`${host}/api/conversia/users`, {
+  //         method: "POST",
+  //         headers: { "Content-Type": "application/json" },
+  //         body: JSON.stringify({
+  //           sui_id: walletAddress,
+  //           username: "anonymous",
+  //         }),
+  //       });
+
+  //       const data = await res.json();
+  //       if (data.user?.user_id) {
+  //         setUserId(data.user.user_id);
+  //       }
+  //     } catch (err) {
+  //       console.error("Failed to ensure user:", err);
+  //     }
+  //   };
+
+  //   if (walletAddress) {
+  //     ensureUserExists();
+  //   }
+  // }, [walletResolved, walletAddress]);
+
   useEffect(() => {
     const ensureUserExists = async () => {
-      if (!walletAddress) return;
+      if (!walletResolved || !walletAddress || userFetched) return;
 
       try {
         const res = await fetch(`${host}/api/conversia/users`, {
@@ -136,16 +165,15 @@ const App: React.FC<InterviewProps> = () => {
         const data = await res.json();
         if (data.user?.user_id) {
           setUserId(data.user.user_id);
+          setUserFetched(true); // ✅ prevent refetch
         }
       } catch (err) {
         console.error("Failed to ensure user:", err);
       }
     };
 
-    if (walletAddress) {
-      ensureUserExists();
-    }
-  }, [walletAddress]);
+    ensureUserExists();
+  }, [walletResolved, walletAddress, userFetched]);
 
   useEffect(() => {
     const loadChatHistory = async () => {
