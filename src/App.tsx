@@ -213,18 +213,58 @@ const App: React.FC<InterviewProps> = () => {
     ensureUserExists();
   }, [walletResolved, walletAddress, userFetched]);
 
-  useEffect(() => {
-    const loadChatHistory = async () => {
-      if (!userId || !modelId) return;
+  // useEffect(() => {
+  //   const loadChatHistory = async () => {
+  //     if (!userId || !modelId) return;
 
+  //     try {
+  //       const res = await fetch(
+  //         `${host}/api/conversia/chat-history/${userId}/${modelId}`
+  //       );
+  //       const data = await res.json();
+
+  //       const formatted = (data as ChatHistoryItem[]).map(
+  //         (msg): Message => ({
+  //           message: msg.message,
+  //           sender: msg.sender === "user" ? "Aku" : "Maya",
+  //           direction: msg.sender === "user" ? "outgoing" : "incoming",
+  //         })
+  //       );
+
+  //       setMessages(formatted);
+  //     } catch (error) {
+  //       console.error("Failed to load chat history:", error);
+  //     }
+  //   };
+
+  //   loadChatHistory();
+  // }, [userId, modelId]);
+
+  useEffect(() => {
+    if (!userId || !modelId) return;
+
+    console.log("📥 Loading chat history with", { userId, modelId });
+
+    const loadChatHistory = async () => {
       try {
         const res = await fetch(
           `${host}/api/conversia/chat-history/${userId}/${modelId}`
         );
-        const data = await res.json();
+        if (!res.ok) {
+          console.error("❌ Chat fetch failed:", res.status);
+          return;
+        }
 
-        const formatted = (data as ChatHistoryItem[]).map(
-          (msg): Message => ({
+        const data = await res.json();
+        console.log("📨 Chat history response:", data);
+
+        if (!Array.isArray(data)) {
+          console.warn("⚠️ Chat response is not an array");
+          return;
+        }
+
+        const formatted = data.map(
+          (msg: ChatHistoryItem): Message => ({
             message: msg.message,
             sender: msg.sender === "user" ? "Aku" : "Maya",
             direction: msg.sender === "user" ? "outgoing" : "incoming",
@@ -237,7 +277,10 @@ const App: React.FC<InterviewProps> = () => {
       }
     };
 
-    loadChatHistory();
+    // ✅ Small delay to ensure userId was just set
+    const timeout = setTimeout(loadChatHistory, 100);
+
+    return () => clearTimeout(timeout);
   }, [userId, modelId]);
 
   const [currentAnimation, setCurrentAnimation] = useState<string | null>(null);
