@@ -200,6 +200,7 @@ const App: React.FC<InterviewProps> = () => {
         if (data.user?.user_id) {
           console.log("✅ User created or found:", data.user.user_id);
           setUserId(data.user.user_id);
+          localStorage.setItem("userId", data.user.user_id.toString()); // 👈 ADD THIS
           setUserFetched(true); // ✅ prevent refetch
         } else {
           console.warn("⚠️ No user_id found in response.");
