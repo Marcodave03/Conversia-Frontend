@@ -150,9 +150,20 @@ const App: React.FC<InterviewProps> = () => {
 
   useEffect(() => {
     const ensureUserExists = async () => {
-      if (!walletResolved || !walletAddress || userFetched) return;
+      console.log("🧠 [ensureUserExists triggered]", {
+        walletResolved,
+        walletAddress,
+        userFetched,
+      });
+
+      if (!walletResolved || !walletAddress || userFetched) {
+        console.log("⏭️ Skipping user creation due to unmet conditions.");
+        return;
+      }
 
       try {
+        console.log("👤 Creating or fetching user for wallet:", walletAddress);
+
         const res = await fetch(`${host}/api/conversia/users`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -163,12 +174,17 @@ const App: React.FC<InterviewProps> = () => {
         });
 
         const data = await res.json();
+        console.log("📨 Response from user endpoint:", data);
+
         if (data.user?.user_id) {
+          console.log("✅ User created or found:", data.user.user_id);
           setUserId(data.user.user_id);
           setUserFetched(true); // ✅ prevent refetch
+        } else {
+          console.warn("⚠️ No user_id found in response.");
         }
       } catch (err) {
-        console.error("Failed to ensure user:", err);
+        console.error("❌ Failed to ensure user:", err);
       }
     };
 
@@ -445,6 +461,10 @@ const App: React.FC<InterviewProps> = () => {
       console.warn("⚠️ No valid wallet address found even after resolution.");
     }
   }, [walletResolved, walletAddress]);
+
+  useEffect(() => {
+    console.log("📌 [App] userId updated to:", userId); // 👈 Watch userId updates
+  }, [userId]);
 
   if (!walletResolved) {
     console.log("⏳ Waiting for wallet to resolve...");
