@@ -501,6 +501,10 @@ const App: React.FC<InterviewProps> = () => {
     return <div>🔄 Loading your profile...</div>;
   }
 
+  if (!userId) {
+    return <div>🔄 Loading your profile...</div>;
+  }
+
   return (
     <>
       <AnimatePresence>
