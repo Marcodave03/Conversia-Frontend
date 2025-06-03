@@ -648,9 +648,15 @@ const App: React.FC<InterviewProps> = () => {
       console.log("📨 User response:", data)
 
       if (data.user?.user_id) {
-        setUserId(data.user.user_id)
-        localStorage.setItem("userId", data.user.user_id.toString())
-        console.log("✅ User ID set:", data.user.user_id)
+        const newUserId = data.user.user_id
+        setUserId(newUserId)
+        localStorage.setItem("userId", newUserId.toString())
+        console.log("✅ User ID set:", newUserId)
+
+        // Force a small delay to ensure state is updated before chat history loads
+        setTimeout(() => {
+          console.log("🔄 Triggering chat history load after userId update")
+        }, 100)
       }
     } catch (err) {
       console.error("❌ Failed to create/get user:", err)
@@ -661,7 +667,7 @@ const App: React.FC<InterviewProps> = () => {
   useEffect(() => {
     const loadChatHistory = async () => {
       if (!userId || !modelId) {
-        console.log("⏭️ Skipping chat history load - missing userId or modelId")
+        console.log("⏭️ Skipping chat history load - missing userId or modelId", { userId, modelId })
         return
       }
 
@@ -695,8 +701,8 @@ const App: React.FC<InterviewProps> = () => {
       }
     }
 
-    // Small delay to ensure userId is properly set
-    const timeout = setTimeout(loadChatHistory, 200)
+    // Increase delay to ensure userId state is properly set
+    const timeout = setTimeout(loadChatHistory, 500)
     return () => clearTimeout(timeout)
   }, [userId, modelId])
 
