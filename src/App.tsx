@@ -24,20 +24,7 @@
 // };
 
 // const App: React.FC<InterviewProps> = () => {
-//   //const wallet = useWallet();
-//   // const storedZkWallet = localStorage.getItem("zkloginWallet");
-//   // const storedBypass = localStorage.getItem("bypassWallet");
-//   // const walletAddress =
-//   //   wallet.account?.address ?? storedBypass ?? storedZkWallet;
 //   const wallet = useWallet();
-//   // const storedBypass = localStorage.getItem("bypassWallet");
-//   // const storedZkWallet = localStorage.getItem("zkloginWallet");
-//   //const walletAddress = wallet.account?.address ?? storedBypass ?? storedZkWallet;
-//   const [walletAddress, setWalletAddress] = useState<string | null>(null);
-//   const [walletResolved, setWalletResolved] = useState(false);
-//   const [userFetched, setUserFetched] = useState(false);
-
-//   // const wallet = useWallet();
 //   const [modelId, setModelId] = useState<number>(1);
 //   const [userId, setUserId] = useState<number>();
 //   const [currentExpression, setCurrentExpression] = useState<string | null>(
@@ -45,30 +32,9 @@
 //   );
 //   const [modelUrl, setModelUrl] = useState<string>("/models/girl1.glb"); // default avatar
 //   const [backgroundUrl, setBackgroundUrl] = useState<string>(bgImage); // use default bg as fallback
-//   // const storedBypass = localStorage.getItem("bypassWallet");
-//   // const walletAddress = wallet.account?.address ?? storedBypass;
+//   const storedBypass = localStorage.getItem("bypassWallet");
+//   const walletAddress = wallet.account?.address ?? storedBypass;
 //   const host = import.meta.env.VITE_HOST;
-
-//   useEffect(() => {
-//     const restoreSession = () => {
-//       const zk = localStorage.getItem("zkloginWallet");
-//       const uid = localStorage.getItem("userId");
-
-//       if (zk?.startsWith("0x")) {
-//         console.log("✅ Restoring zkLogin wallet from session:", zk);
-//         setWalletAddress(zk);
-//         setWalletResolved(true);
-//       }
-
-//       if (uid) {
-//         console.log("✅ Restoring userId from session:", uid);
-//         setUserId(parseInt(uid));
-//         setUserFetched(true);
-//       }
-//     };
-
-//     restoreSession();
-//   }, []);
 
 //   // Hide intro after animation finishes
 //   useEffect(() => {
@@ -79,192 +45,51 @@
 //     return () => clearTimeout(timer);
 //   }, []);
 
-//   // useEffect(() => {
-//   //   const storedBypass = localStorage.getItem("bypassWallet");
-//   //   const storedZkWallet = localStorage.getItem("zkloginWallet");
-
-//   //   const resolvedAddress =
-//   //     wallet.account?.address ?? storedBypass ?? storedZkWallet;
-
-//   //   console.log("📦 resolved wallet.address:", wallet.account?.address);
-//   //   console.log("📦 local bypass:", storedBypass);
-//   //   console.log("📦 local zk:", storedZkWallet);
-//   //   console.log("✅ Final resolved address:", resolvedAddress);
-
-//   //   if (resolvedAddress?.startsWith("0x")) {
-//   //     setWalletAddress(resolvedAddress);
-//   //   }
-//   // }, []);
-
-//   //   useEffect(() => {
-//   //   const resolveAddress = () => {
-//   //     return (
-//   //       wallet.account?.address ||
-//   //       localStorage.getItem("bypassWallet") ||
-//   //       localStorage.getItem("zkloginWallet")
-//   //     );
-//   //   };
-
-//   //   const address = resolveAddress();
-//   //   console.log("✅ Final resolved walletAddress in App:", address);
-//   //   if (address?.startsWith("0x")) {
-//   //     setWalletAddress(address);
-//   //   }
-//   // }, [wallet.account]);
-
-//   useEffect(() => {
-//     const resolveAddress = () => {
-//       const address =
-//         wallet.account?.address ||
-//         localStorage.getItem("bypassWallet") ||
-//         localStorage.getItem("zkloginWallet");
-
-//       console.log("✅ Final resolved walletAddress in App:", address);
-
-//       if (address?.startsWith("0x")) {
-//         setWalletAddress(address);
-//       }
-
-//       // ✅ Always mark wallet resolution as done, even if null
-//       setWalletResolved(true);
-//     };
-
-//     resolveAddress();
-//   }, [wallet.account]);
-
-//   useEffect(() => {
-//     const handler = () => {
-//       const zk = localStorage.getItem("zkloginWallet");
-//       if (zk?.startsWith("0x")) setWalletAddress(zk);
-//     };
-//     window.addEventListener("zklogin-success", handler);
-//     return () => window.removeEventListener("zklogin-success", handler);
-//   }, []);
-
-//   // useEffect(() => {
-//   //   const ensureUserExists = async () => {
-//   //     if (!walletAddress) return;
-
-//   //     try {
-//   //       const res = await fetch(`${host}/api/conversia/users`, {
-//   //         method: "POST",
-//   //         headers: { "Content-Type": "application/json" },
-//   //         body: JSON.stringify({
-//   //           sui_id: walletAddress,
-//   //           username: "anonymous",
-//   //         }),
-//   //       });
-
-//   //       const data = await res.json();
-//   //       if (data.user?.user_id) {
-//   //         setUserId(data.user.user_id);
-//   //       }
-//   //     } catch (err) {
-//   //       console.error("Failed to ensure user:", err);
-//   //     }
-//   //   };
-
-//   //   if (walletAddress) {
-//   //     ensureUserExists();
-//   //   }
-//   // }, [walletResolved, walletAddress]);
-
 //   useEffect(() => {
 //     const ensureUserExists = async () => {
-//       console.log("🧠 [ensureUserExists triggered]", {
-//         walletResolved,
-//         walletAddress,
-//         userFetched,
-//       });
-
-//       if (!walletResolved || !walletAddress || userFetched) {
-//         console.log("⏭️ Skipping user creation due to unmet conditions.");
-//         return;
-//       }
+//       const walletAddress = wallet.account?.address;
+//       if (!walletAddress) return;
 
 //       try {
-//         console.log("👤 Creating or fetching user for wallet:", walletAddress);
-
+//         // Create or get user by wallet address
 //         const res = await fetch(`${host}/api/conversia/users`, {
 //           method: "POST",
 //           headers: { "Content-Type": "application/json" },
 //           body: JSON.stringify({
 //             sui_id: walletAddress,
-//             username: "anonymous",
+//             username: "anonymous", // or get username from somewhere else
 //           }),
 //         });
 
 //         const data = await res.json();
-//         console.log("📨 Response from user endpoint:", data);
-
 //         if (data.user?.user_id) {
-//           console.log("✅ User created or found:", data.user.user_id);
 //           setUserId(data.user.user_id);
-//           localStorage.setItem("userId", data.user.user_id.toString()); // 👈 ADD THIS
-//           setUserFetched(true); // ✅ prevent refetch
-//         } else {
-//           console.warn("⚠️ No user_id found in response.");
 //         }
 //       } catch (err) {
-//         console.error("❌ Failed to ensure user:", err);
+//         console.error("Failed to ensure user:", err);
 //       }
 //     };
 
-//     ensureUserExists();
-//   }, [walletResolved, walletAddress, userFetched]);
-
-//   // useEffect(() => {
-//   //   const loadChatHistory = async () => {
-//   //     if (!userId || !modelId) return;
-
-//   //     try {
-//   //       const res = await fetch(
-//   //         `${host}/api/conversia/chat-history/${userId}/${modelId}`
-//   //       );
-//   //       const data = await res.json();
-
-//   //       const formatted = (data as ChatHistoryItem[]).map(
-//   //         (msg): Message => ({
-//   //           message: msg.message,
-//   //           sender: msg.sender === "user" ? "Aku" : "Maya",
-//   //           direction: msg.sender === "user" ? "outgoing" : "incoming",
-//   //         })
-//   //       );
-
-//   //       setMessages(formatted);
-//   //     } catch (error) {
-//   //       console.error("Failed to load chat history:", error);
-//   //     }
-//   //   };
-
-//   //   loadChatHistory();
-//   // }, [userId, modelId]);
+//     // if (wallet.status === "connected") {
+//     //   ensureUserExists();
+//     // }
+//     if (walletAddress) {
+//       ensureUserExists();
+//     }
+//   }, [wallet]);
 
 //   useEffect(() => {
-//     if (!userId || !modelId) return;
-
-//     console.log("📥 Loading chat history with", { userId, modelId });
-
 //     const loadChatHistory = async () => {
+//       if (!userId || !modelId) return;
+
 //       try {
 //         const res = await fetch(
 //           `${host}/api/conversia/chat-history/${userId}/${modelId}`
 //         );
-//         if (!res.ok) {
-//           console.error("❌ Chat fetch failed:", res.status);
-//           return;
-//         }
-
 //         const data = await res.json();
-//         console.log("📨 Chat history response:", data);
 
-//         if (!Array.isArray(data)) {
-//           console.warn("⚠️ Chat response is not an array");
-//           return;
-//         }
-
-//         const formatted = data.map(
-//           (msg: ChatHistoryItem): Message => ({
+//         const formatted = (data as ChatHistoryItem[]).map(
+//           (msg): Message => ({
 //             message: msg.message,
 //             sender: msg.sender === "user" ? "Aku" : "Maya",
 //             direction: msg.sender === "user" ? "outgoing" : "incoming",
@@ -277,10 +102,7 @@
 //       }
 //     };
 
-//     // ✅ Small delay to ensure userId was just set
-//     const timeout = setTimeout(loadChatHistory, 100);
-
-//     return () => clearTimeout(timeout);
+//     loadChatHistory();
 //   }, [userId, modelId]);
 
 //   const [currentAnimation, setCurrentAnimation] = useState<string | null>(null);
@@ -521,37 +343,6 @@
 //     return () => window.removeEventListener("resize", handleResize);
 //   }, []);
 
-//   useEffect(() => {
-//     if (walletResolved && !walletAddress) {
-//       console.warn("⚠️ No valid wallet address found even after resolution.");
-//     }
-//   }, [walletResolved, walletAddress]);
-
-//   useEffect(() => {
-//     console.log("📌 [App] userId updated to:", userId); // 👈 Watch userId updates
-//   }, [userId]);
-
-//   if (!walletResolved) {
-//     console.log("⏳ Waiting for wallet to resolve...");
-//     return (
-//       <div className="text-white flex justify-center items-center h-screen">
-//         ⏳ Resolving wallet address...
-//       </div>
-//     );
-//   }
-
-//   if (!walletResolved) {
-//     return <div>🔄 Loading your profile...</div>;
-//   }
-
-//   if (!userFetched || !userId) {
-//     return (
-//       <div className="text-white flex justify-center items-center h-screen">
-//         🔄 Loading your profile...
-//       </div>
-//     );
-//   }
-
 //   return (
 //     <>
 //       <AnimatePresence>
@@ -583,7 +374,7 @@
 //           setModelUrl={setModelUrl}
 //           setBackgroundUrl={setBackgroundUrl}
 //           setModelId={setModelId}
-//           userId={userId}
+//           userId={userId!}
 //         />
 
 //         {isMobile && (
@@ -750,350 +541,409 @@
 // export default App;
 
 
-import React, { useState, useEffect, useRef } from "react";
-import { Canvas } from "@react-three/fiber";
-import { Experience } from "./components/Experience";
-import Header from "./components/Header";
-import bgImage from "./assets/conversia-bg.png";
-import { MouthCue } from "./components/Avatar";
-import { motion, AnimatePresence } from "framer-motion";
-import { useWallet } from "@suiet/wallet-kit";
-import { MobileChatFrame } from "./components/MobileChatFrame";
+
+"use client"
+
+import type React from "react"
+import { useState, useEffect, useRef } from "react"
+import { Canvas } from "@react-three/fiber"
+import { Experience } from "./components/Experience"
+import Header from "./components/Header"
+import bgImage from "./assets/conversia-bg.png"
+import type { MouthCue } from "./components/Avatar"
+import { motion, AnimatePresence } from "framer-motion"
+import { useWallet } from "@suiet/wallet-kit"
+import { MobileChatFrame } from "./components/MobileChatFrame"
 
 type Message = {
-  message: string;
-  sender: string;
-  direction: "incoming" | "outgoing";
-};
+  message: string
+  sender: string
+  direction: "incoming" | "outgoing"
+}
 
 type InterviewProps = {
-  interview_prompt: string | undefined;
-};
+  interview_prompt: string | undefined
+}
 
 type ChatHistoryItem = {
-  message: string;
-  sender: "user" | "system";
-};
+  message: string
+  sender: "user" | "system"
+}
 
 const App: React.FC<InterviewProps> = () => {
-  const wallet = useWallet();
-  const [modelId, setModelId] = useState<number>(1);
-  const [userId, setUserId] = useState<number>();
-  const [currentExpression, setCurrentExpression] = useState<string | null>(
-    null
-  );
-  const [modelUrl, setModelUrl] = useState<string>("/models/girl1.glb"); // default avatar
-  const [backgroundUrl, setBackgroundUrl] = useState<string>(bgImage); // use default bg as fallback
-  const storedBypass = localStorage.getItem("bypassWallet");
-  const walletAddress = wallet.account?.address ?? storedBypass;
-  const host = import.meta.env.VITE_HOST;
+  const wallet = useWallet()
+  const [modelId, setModelId] = useState<number>(1)
+  const [userId, setUserId] = useState<number>()
+  const [currentExpression, setCurrentExpression] = useState<string | null>(null)
+  const [modelUrl, setModelUrl] = useState<string>("/models/girl1.glb")
+  const [backgroundUrl, setBackgroundUrl] = useState<string>(bgImage)
+  const [walletAddress, setWalletAddress] = useState<string | null>(null)
+  const [isInitialized, setIsInitialized] = useState(false)
+  const host = import.meta.env.VITE_HOST
 
-  // Hide intro after animation finishes
+  // Animation and UI states
+  const [currentAnimation, setCurrentAnimation] = useState<string | null>(null)
+  const [currentMouthCues, setCurrentMouthCues] = useState<MouthCue[]>([])
+  const [audioDuration, setAudioDuration] = useState<number>(0)
+  const [messages, setMessages] = useState<Message[]>([])
+  const [isTyping, setIsTyping] = useState(false)
+  const [userInput, setUserInput] = useState("")
+  const [typingText, setTypingText] = useState("")
+  const [isSpeechEnabled, setIsSpeechEnabled] = useState(false)
+  const [isSpeaking, setIsSpeaking] = useState(false)
+  const [isRecording, setIsRecording] = useState(false)
+  const [isChatOpen, setIsChatOpen] = useState(true)
+  const [isMobile, setIsMobile] = useState(false)
+  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null)
+  const [loadingTranscription, setLoadingTranscription] = useState(false)
+  const [showIntro, setShowIntro] = useState(true)
+  const bottomRef = useRef<HTMLDivElement | null>(null)
+
+  // Simplified wallet resolution
+  const resolveWalletAddress = (): string | null => {
+    return wallet.account?.address || localStorage.getItem("zkloginWallet") || localStorage.getItem("bypassWallet")
+  }
+
+  // Initialize wallet address and user
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowIntro(false);
-    }, 3500); // typing duration + slide
+    const initializeApp = async () => {
+      const address = resolveWalletAddress()
+      console.log("🔍 Resolved wallet address:", address)
 
-    return () => clearTimeout(timer);
-  }, []);
-
-  useEffect(() => {
-    const ensureUserExists = async () => {
-      const walletAddress = wallet.account?.address;
-      if (!walletAddress) return;
-
-      try {
-        // Create or get user by wallet address
-        const res = await fetch(`${host}/api/conversia/users`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            sui_id: walletAddress,
-            username: "anonymous", // or get username from somewhere else
-          }),
-        });
-
-        const data = await res.json();
-        if (data.user?.user_id) {
-          setUserId(data.user.user_id);
-        }
-      } catch (err) {
-        console.error("Failed to ensure user:", err);
+      if (address?.startsWith("0x")) {
+        setWalletAddress(address)
+        await createOrGetUser(address)
       }
-    };
 
-    // if (wallet.status === "connected") {
-    //   ensureUserExists();
-    // }
-    if (walletAddress) {
-      ensureUserExists();
+      setIsInitialized(true)
     }
-  }, [wallet]);
 
+    initializeApp()
+
+    // Listen for zkLogin success events
+    const handleZkLoginSuccess = () => {
+      console.log("🎉 zkLogin success event received")
+      initializeApp()
+    }
+
+    window.addEventListener("zklogin-success", handleZkLoginSuccess)
+    return () => window.removeEventListener("zklogin-success", handleZkLoginSuccess)
+  }, [wallet.account?.address])
+
+  // Create or get user from backend
+  const createOrGetUser = async (address: string) => {
+    try {
+      console.log("👤 Creating/fetching user for address:", address)
+
+      const res = await fetch(`${host}/api/conversia/users`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sui_id: address,
+          username: address.startsWith("0x") ? `user_${address.slice(2, 8)}` : "anonymous",
+        }),
+      })
+
+      const data = await res.json()
+      console.log("📨 User response:", data)
+
+      if (data.user?.user_id) {
+        setUserId(data.user.user_id)
+        localStorage.setItem("userId", data.user.user_id.toString())
+        console.log("✅ User ID set:", data.user.user_id)
+      }
+    } catch (err) {
+      console.error("❌ Failed to create/get user:", err)
+    }
+  }
+
+  // Load chat history when userId and modelId are available
   useEffect(() => {
     const loadChatHistory = async () => {
-      if (!userId || !modelId) return;
+      if (!userId || !modelId) {
+        console.log("⏭️ Skipping chat history load - missing userId or modelId")
+        return
+      }
 
       try {
-        const res = await fetch(
-          `${host}/api/conversia/chat-history/${userId}/${modelId}`
-        );
-        const data = await res.json();
+        console.log("📥 Loading chat history for user:", userId, "model:", modelId)
 
-        const formatted = (data as ChatHistoryItem[]).map(
-          (msg): Message => ({
-            message: msg.message,
-            sender: msg.sender === "user" ? "Aku" : "Maya",
-            direction: msg.sender === "user" ? "outgoing" : "incoming",
-          })
-        );
+        const res = await fetch(`${host}/api/conversia/chat-history/${userId}/${modelId}`)
 
-        setMessages(formatted);
+        if (!res.ok) {
+          console.error("❌ Chat history fetch failed:", res.status)
+          return
+        }
+
+        const data = await res.json()
+        console.log("📨 Chat history loaded:", data)
+
+        if (Array.isArray(data)) {
+          const formatted = data.map(
+            (msg: ChatHistoryItem): Message => ({
+              message: msg.message,
+              sender: msg.sender === "user" ? "Aku" : "Maya",
+              direction: msg.sender === "user" ? "outgoing" : "incoming",
+            }),
+          )
+
+          setMessages(formatted)
+          console.log("✅ Chat history formatted and set")
+        }
       } catch (error) {
-        console.error("Failed to load chat history:", error);
+        console.error("❌ Failed to load chat history:", error)
       }
-    };
+    }
 
-    loadChatHistory();
-  }, [userId, modelId]);
+    // Small delay to ensure userId is properly set
+    const timeout = setTimeout(loadChatHistory, 200)
+    return () => clearTimeout(timeout)
+  }, [userId, modelId])
 
-  const [currentAnimation, setCurrentAnimation] = useState<string | null>(null);
-  const [currentMouthCues, setCurrentMouthCues] = useState<MouthCue[]>([]);
-  const [audioDuration, setAudioDuration] = useState<number>(0);
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [isTyping, setIsTyping] = useState(false);
-  const [userInput, setUserInput] = useState("");
-  const [typingText, setTypingText] = useState("");
-  const [isSpeechEnabled, setIsSpeechEnabled] = useState(false);
-  const [isSpeaking, setIsSpeaking] = useState(false);
-  const [isRecording, setIsRecording] = useState(false);
-  const [isChatOpen, setIsChatOpen] = useState(true);
-  const [isMobile, setIsMobile] = useState(false);
-  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(
-    null
-  );
-  const [loadingTranscription, setLoadingTranscription] = useState(false);
-  const [showIntro, setShowIntro] = useState(true);
-  const bottomRef = useRef<HTMLDivElement | null>(null);
+  // Hide intro after animation
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowIntro(false)
+    }, 3500)
+    return () => clearTimeout(timer)
+  }, [])
+
+  // Handle mobile detection
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+
+    handleResize()
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
+  }, [])
+
+  // Auto-scroll to bottom
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" })
+  }, [messages, typingText])
 
   const handleSend = async () => {
-    if (!userInput.trim()) return;
+    if (!userInput.trim() || !userId) return
 
     const newMessage: Message = {
       message: userInput,
       direction: "outgoing",
       sender: "Aku",
-    };
+    }
 
-    const newMessages = [...messages, newMessage];
+    const newMessages = [...messages, newMessage]
+    setMessages(newMessages)
+    setUserInput("")
+    setIsTyping(true)
 
-    setMessages(newMessages);
-    setUserInput("");
-    setIsTyping(true);
+    await processMessageToChatGPT(newMessages)
+  }
 
-    await processMessageToChatGPT(newMessages);
-  };
-
-  async function processMessageToChatGPT(chatMessages: Message[]) {
+  const processMessageToChatGPT = async (chatMessages: Message[]) => {
     try {
-      const lastMessage = chatMessages[chatMessages.length - 1];
+      const lastMessage = chatMessages[chatMessages.length - 1]
 
-      const response = await fetch(
-        `${host}/api/conversia/chat-history/${userId}/${modelId}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            message: lastMessage.message,
-            sender: "user",
-          }),
-        }
-      );
+      const response = await fetch(`${host}/api/conversia/chat-history/${userId}/${modelId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: lastMessage.message,
+          sender: "user",
+        }),
+      })
 
-      const data = await response.json();
-      const fullText = data.system?.message || "Maya belum bicara ya...";
-      const soundDuration = data.system?.lipsync?.metadata?.duration || 2;
-      const mouthCues = data.system?.lipsync?.mouthCues || [];
-      const facialExpression = data.system?.facialExpression || "default";
-      const animation = data.system?.animation || "Idle";
-      const audioUrl = `${host}/audios/response.mp3`;
+      const data = await response.json()
+      const fullText = data.system?.message || "Maya belum bicara ya..."
+      const soundDuration = data.system?.lipsync?.metadata?.duration || 2
+      const mouthCues = data.system?.lipsync?.mouthCues || []
+      const facialExpression = data.system?.facialExpression || "default"
+      const animation = data.system?.animation || "Idle"
+      const audioUrl = `${host}/audios/response.mp3`
 
-      setTypingText("");
-      setCurrentExpression(facialExpression);
-      setCurrentAnimation(animation);
-      setCurrentMouthCues(mouthCues);
-      setAudioDuration(soundDuration * 1000);
-      setIsTyping(true);
+      setTypingText("")
+      setCurrentExpression(facialExpression)
+      setCurrentAnimation(animation)
+      setCurrentMouthCues(mouthCues)
+      setAudioDuration(soundDuration * 1000)
+      setIsTyping(true)
 
       // Play audio if enabled
-      let audioDuration = 0;
+      let audioDuration = 0
       if (isSpeechEnabled && audioUrl) {
         try {
-          const freshAudioUrl = `${audioUrl}?t=${new Date().getTime()}`;
-          const audioResponse = await fetch(freshAudioUrl);
-          const audioBlob = await audioResponse.blob();
-          const audioObjectUrl = URL.createObjectURL(audioBlob);
-          const audio = new Audio(audioObjectUrl);
+          const freshAudioUrl = `${audioUrl}?t=${new Date().getTime()}`
+          const audioResponse = await fetch(freshAudioUrl)
+          const audioBlob = await audioResponse.blob()
+          const audioObjectUrl = URL.createObjectURL(audioBlob)
+          const audio = new Audio(audioObjectUrl)
 
-          audio.onplay = () => setIsSpeaking(true);
-          audio.onended = () => setIsSpeaking(false);
+          audio.onplay = () => setIsSpeaking(true)
+          audio.onended = () => setIsSpeaking(false)
 
           await new Promise((resolve) => {
             audio.onloadedmetadata = () => {
-              const safeDuration = audio.duration * 1000;
-              setAudioDuration(safeDuration);
-              resolve(audio.play());
-            };
-          });
-          await audio.play();
-          audioDuration = audio.duration * 1000 || 2000;
+              const safeDuration = audio.duration * 1000
+              setAudioDuration(safeDuration)
+              resolve(audio.play())
+            }
+          })
+          await audio.play()
+          audioDuration = audio.duration * 1000 || 2000
         } catch (err) {
-          console.error("Error playing audio:", err);
+          console.error("Error playing audio:", err)
         }
       }
 
       // Typing effect
-      const duration = audioDuration || fullText.length * 50;
-      const interval = duration / fullText.length;
+      const duration = audioDuration || fullText.length * 50
+      const interval = duration / fullText.length
 
-      let index = 0;
-      let lastTime = performance.now();
+      let index = 0
+      let lastTime = performance.now()
 
       const typeChar = (time: number) => {
         if (time - lastTime >= interval && index < fullText.length) {
-          setTypingText((prev) => prev + fullText.charAt(index));
-          index++;
-          lastTime = time;
+          setTypingText((prev) => prev + fullText.charAt(index))
+          index++
+          lastTime = time
         }
 
         if (index < fullText.length) {
-          requestAnimationFrame(typeChar);
+          requestAnimationFrame(typeChar)
         } else {
           const aiMessage: Message = {
             message: fullText,
             sender: "Maya",
             direction: "incoming",
-          };
-          setMessages((prev) => [...prev, aiMessage]);
-          setTypingText("");
-          setIsTyping(false);
+          }
+          setMessages((prev) => [...prev, aiMessage])
+          setTypingText("")
+          setIsTyping(false)
         }
-      };
+      }
 
-      requestAnimationFrame(typeChar);
+      requestAnimationFrame(typeChar)
     } catch (error) {
-      console.error("Error talking to backend:", error);
-      setIsTyping(false);
+      console.error("Error talking to backend:", error)
+      setIsTyping(false)
     }
   }
 
   const toggleSpeech = () => {
-    setIsSpeechEnabled(!isSpeechEnabled);
-  };
+    setIsSpeechEnabled(!isSpeechEnabled)
+  }
 
   const toggleRecording = async () => {
     if (isRecording) {
-      mediaRecorder?.stop();
-      setIsRecording(false);
+      mediaRecorder?.stop()
+      setIsRecording(false)
     } else {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          audio: true,
-        });
-        const recorder = new MediaRecorder(stream);
-        const audioChunks: Blob[] = [];
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+        const recorder = new MediaRecorder(stream)
+        const audioChunks: Blob[] = []
 
         recorder.ondataavailable = (event) => {
-          audioChunks.push(event.data);
-        };
+          audioChunks.push(event.data)
+        }
 
         recorder.onstop = async () => {
-          const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
-          const formData = new FormData();
-          formData.append("audio", audioBlob, "recording.webm");
+          const audioBlob = new Blob(audioChunks, { type: "audio/webm" })
+          const formData = new FormData()
+          formData.append("audio", audioBlob, "recording.webm")
 
           try {
-            setLoadingTranscription(true); // === ADD THIS ===
+            setLoadingTranscription(true)
 
-            const response = await fetch(
-              `${host}/api/conversia/speech-to-text/${userId}/${modelId}`,
-              {
-                method: "POST",
-                body: formData,
-              }
-            );
+            const response = await fetch(`${host}/api/conversia/speech-to-text/${userId}/${modelId}`, {
+              method: "POST",
+              body: formData,
+            })
 
-            const data = await response.json();
+            const data = await response.json()
 
             if (data?.system?.message) {
-              // Push user and system messages
               const newMessage: Message = {
                 message: data.user.message,
                 direction: "outgoing",
                 sender: "Aku",
-              };
+              }
               const systemMessage: Message = {
                 message: data.system.message,
                 direction: "incoming",
                 sender: "Maya",
-              };
+              }
 
-              setMessages((prev) => [...prev, newMessage, systemMessage]);
-              setCurrentExpression(data.system.facialExpression || "default");
-              setCurrentAnimation(data.system.animation || "Talking_1");
-              setCurrentMouthCues(data.system.lipsync?.mouthCues || []);
-              setAudioDuration(
-                data.system.lipsync?.metadata?.duration * 1000 || 2000
-              );
+              setMessages((prev) => [...prev, newMessage, systemMessage])
+              setCurrentExpression(data.system.facialExpression || "default")
+              setCurrentAnimation(data.system.animation || "Talking_1")
+              setCurrentMouthCues(data.system.lipsync?.mouthCues || [])
+              setAudioDuration(data.system.lipsync?.metadata?.duration * 1000 || 2000)
 
-              // Play audio
               if (isSpeechEnabled && data.system.audio) {
-                const audioBlob = new Blob(
-                  [
-                    Uint8Array.from(atob(data.system.audio), (c) =>
-                      c.charCodeAt(0)
-                    ),
-                  ],
-                  { type: "audio/mpeg" }
-                );
-                const audioUrl = URL.createObjectURL(audioBlob);
-                const audio = new Audio(audioUrl);
-                audio.onplay = () => setIsSpeaking(true);
-                audio.onended = () => setIsSpeaking(false);
-                await audio.play();
+                const audioBlob = new Blob([Uint8Array.from(atob(data.system.audio), (c) => c.charCodeAt(0))], {
+                  type: "audio/mpeg",
+                })
+                const audioUrl = URL.createObjectURL(audioBlob)
+                const audio = new Audio(audioUrl)
+                audio.onplay = () => setIsSpeaking(true)
+                audio.onended = () => setIsSpeaking(false)
+                await audio.play()
               }
             }
           } catch (err) {
-            console.error("Speech-to-Text failed:", err);
+            console.error("Speech-to-Text failed:", err)
           } finally {
-            setLoadingTranscription(false); // === ADD THIS ===
+            setLoadingTranscription(false)
           }
-        };
+        }
 
-        recorder.start();
-        setMediaRecorder(recorder);
-        setIsRecording(true);
+        recorder.start()
+        setMediaRecorder(recorder)
+        setIsRecording(true)
       } catch (err) {
-        console.error("Failed to start recording:", err);
+        console.error("Failed to start recording:", err)
       }
     }
-  };
+  }
 
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, typingText]);
+  // Show loading state while initializing
+  if (!isInitialized) {
+    return (
+      <div className="text-white flex justify-center items-center h-screen">
+        <div className="text-center">
+          <div className="w-8 h-8 border-4 border-blue-500 border-dashed rounded-full animate-spin mx-auto mb-4"></div>
+          <p>🔄 Initializing your session...</p>
+        </div>
+      </div>
+    )
+  }
 
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
+  // Show error state if no wallet found
+  if (!walletAddress) {
+    return (
+      <div className="text-white flex justify-center items-center h-screen">
+        <div className="text-center">
+          <p className="text-red-400 mb-4">❌ No wallet address found</p>
+          <p className="text-sm opacity-70">Please connect your wallet or use Google login</p>
+        </div>
+      </div>
+    )
+  }
 
-    handleResize(); // initialize on mount
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  // Show loading state while fetching user
+  if (!userId) {
+    return (
+      <div className="text-white flex justify-center items-center h-screen">
+        <div className="text-center">
+          <div className="w-8 h-8 border-4 border-green-500 border-dashed rounded-full animate-spin mx-auto mb-4"></div>
+          <p>👤 Setting up your profile...</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <>
@@ -1122,12 +972,7 @@ const App: React.FC<InterviewProps> = () => {
           transition: "background-image 0.5s ease",
         }}
       >
-        <Header
-          setModelUrl={setModelUrl}
-          setBackgroundUrl={setBackgroundUrl}
-          setModelId={setModelId}
-          userId={userId!}
-        />
+        <Header setModelUrl={setModelUrl} setBackgroundUrl={setBackgroundUrl} setModelId={setModelId} userId={userId} />
 
         {isMobile && (
           <MobileChatFrame
@@ -1153,7 +998,6 @@ const App: React.FC<InterviewProps> = () => {
           />
         )}
 
-        {/* ===== Render DESKTOP layout only if not mobile ===== */}
         {!isMobile && (
           <div className="flex-1 flex">
             <div className="w-full h-full relative">
@@ -1187,19 +1031,10 @@ const App: React.FC<InterviewProps> = () => {
                 }}
               >
                 {messages.map((msg, index) => (
-                  <div
-                    key={index}
-                    className={`flex ${
-                      msg.direction === "outgoing"
-                        ? "justify-end"
-                        : "justify-start"
-                    }`}
-                  >
+                  <div key={index} className={`flex ${msg.direction === "outgoing" ? "justify-end" : "justify-start"}`}>
                     <div
                       className={`max-w-[80%] sm:max-w-[70%] md:max-w-[60%] p-3 rounded-xl text-base sm:text-lg ${
-                        msg.sender === "Maya"
-                          ? "bg-white text-gray-900"
-                          : "bg-blue-600 text-white"
+                        msg.sender === "Maya" ? "bg-white text-gray-900" : "bg-blue-600 text-white"
                       }`}
                     >
                       {msg.message}
@@ -1243,7 +1078,7 @@ const App: React.FC<InterviewProps> = () => {
               className="border-none bg-transparent w-full text-white placeholder-white placeholder-opacity-70 text-2xl focus:outline-none px-4 py-2"
               onKeyPress={(e) => {
                 if (e.key === "Enter") {
-                  handleSend();
+                  handleSend()
                 }
               }}
               style={{
@@ -1253,7 +1088,6 @@ const App: React.FC<InterviewProps> = () => {
             />
 
             <div className="flex gap-4 items-center">
-              {/* Recording button */}
               <span
                 className={`text-white text-4xl cursor-pointer transition-opacity duration-300 ${
                   isRecording ? "text-red-500 animate-pulse" : "opacity-50"
@@ -1263,7 +1097,6 @@ const App: React.FC<InterviewProps> = () => {
                 🎙️
               </span>
 
-              {/* Text-to-Speech toggle */}
               <span
                 className={`text-white text-4xl cursor-pointer transition-opacity duration-300 ${
                   isSpeechEnabled ? "opacity-100" : "opacity-50"
@@ -1273,13 +1106,10 @@ const App: React.FC<InterviewProps> = () => {
                 🔈
               </span>
 
-              {/* Recording Status */}
               {isRecording && (
                 <div className="flex items-center ml-2 animate-pulse">
                   <span className="text-red-500 text-2xl">🎤</span>
-                  <span className="text-red-500 font-semibold ml-2">
-                    Recording...
-                  </span>
+                  <span className="text-red-500 font-semibold ml-2">Recording...</span>
                 </div>
               )}
             </div>
@@ -1287,7 +1117,7 @@ const App: React.FC<InterviewProps> = () => {
         )}
       </div>
     </>
-  );
-};
+  )
+}
 
-export default App;
+export default App
