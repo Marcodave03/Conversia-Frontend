@@ -110,24 +110,27 @@
 import React from "react";
 import { GoogleLogin, CredentialResponse } from "@react-oauth/google";
 import { jwtToAddress } from "@mysten/sui/zklogin";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const host = import.meta.env.VITE_HOST;
 
 const ZkLogin: React.FC = () => {
-// const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const handleZkLogin = async (credential: string) => {
     try {
-      const userSalt = BigInt("12345678901234567890"); // Replace with dynamic salt in prod
+      const userSalt = BigInt("12345678901234567890"); // Replace with secure dynamic salt in prod
       const address = jwtToAddress(credential, userSalt);
 
-      // ✅ Save login state
+      // ✅ Save login state to localStorage
       localStorage.setItem("zklogin_loggedin", "true");
       localStorage.setItem("zkloginWallet", address);
       localStorage.setItem("zkloginJWT", credential);
+
+      // ✅ Fire event to inform components like ProtectedRoute
       window.dispatchEvent(new Event("zklogin-success"));
-      // ✅ Send to backend
+
+      // ✅ Send user to backend
       const res = await fetch(`${host}/api/conversia/users`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -140,8 +143,8 @@ const ZkLogin: React.FC = () => {
       const data = await res.json();
       console.log("✅ ZK user created or verified:", data);
 
-      // ✅ Redirect to main page
-      window.location.replace("/");
+      // ✅ Navigate using React Router
+      navigate("/"); // instead of window.location.replace
     } catch (err) {
       console.error("❌ zkLogin failed:", err);
     }
@@ -160,10 +163,10 @@ const ZkLogin: React.FC = () => {
       onError={() => {
         console.error("❌ Google Login Failed (popup closed or blocked)");
       }}
-      // 🔥 FIXED: remove useOneTap to prevent AbortError issues
     />
   );
 };
 
 export default ZkLogin;
+
 
