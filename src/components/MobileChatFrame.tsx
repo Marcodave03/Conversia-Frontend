@@ -67,7 +67,7 @@ export const MobileChatFrame: React.FC<MobileChatFrameProps> = ({
       <div className="h-[850px] relative z-10">
         <Canvas
           shadows
-          camera={{ position: [0, -2.2, 3], fov: 13 }}
+          camera={{ position: [0, 0.2, 3], fov: 8 }}
           style={{ width: "100%", height: "100%" }}
           gl={{ alpha: true, preserveDrawingBuffer: true }}
         >
@@ -84,7 +84,7 @@ export const MobileChatFrame: React.FC<MobileChatFrameProps> = ({
       {/* Expandable Chat Bubble Frame (positioned above input) */}
       <motion.div
         initial={false}
-        animate={{ height: isChatOpen ? 320 : 48 }}
+        animate={{ height: isChatOpen ? 200 : 48 }}
         transition={{ type: "tween", duration: 0.5 }}
         className="absolute bottom-[64px] left-4 right-4 z-20 rounded-xl shadow-xl backdrop-blur-md flex flex-col"
       >
