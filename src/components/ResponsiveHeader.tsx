@@ -86,8 +86,26 @@ const ResponsiveHeader: React.FC<ResponsiveHeaderProps> = ({
           >
             <FaBasketShopping className="inline mr-2" /> Shop
           </button>
-          {wallet.status === "connected" && (
+          {/* {wallet.status === "connected" && (
             <button onClick={wallet.disconnect} className="text-red-400">
+              ❌ Disconnect
+            </button>
+          )} */}
+          {(wallet.account?.address ||
+            localStorage.getItem("zkloginWallet") ||
+            localStorage.getItem("bypassWallet")) && (
+            <button
+              onClick={() => {
+                wallet.disconnect?.(); // Suiet disconnect if available
+                localStorage.removeItem("zkloginWallet");
+                localStorage.removeItem("zklogin_loggedin");
+                localStorage.removeItem("zkloginJWT");
+                localStorage.removeItem("bypassWallet");
+                localStorage.removeItem("userId");
+                window.location.href = "/landing"; // Redirect
+              }}
+              className="text-red-400"
+            >
               ❌ Disconnect
             </button>
           )}
